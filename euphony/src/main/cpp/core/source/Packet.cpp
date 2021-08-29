@@ -7,9 +7,9 @@ using namespace Euphony;
 string Packet::create(string source) {
     std::stringstream result;
 
-    string encodedCode = base16.encode(source);
+    string encodedCode = baseCodec->encode(source);
     for(char& c : encodedCode) {
-        payload.push_back(base16.convertChar2Int(c));
+        payload.push_back(baseCodec->convertChar2Int(c));
     }
 
     string errorCode = makeErrorDetectorCode();
@@ -31,8 +31,8 @@ void Packet::clear() {
 
 string Packet::makeErrorDetectorCode() {
     string errorCode = PacketErrorDetector::makeParityAndChecksum(payload);
-    this->checksum = Base16::convertChar2Int(errorCode.at(0));
-    this->parityCode = Base16::convertChar2Int(errorCode.at(1));
+    this->checksum = Base16().convertChar2Int(errorCode.at(0));
+    this->parityCode = Base16().convertChar2Int(errorCode.at(1));
     this->isVerified = true;
 
     return errorCode;
@@ -60,6 +60,3 @@ string Packet::toString() {
 
     return result.str();
 }
-
-
-

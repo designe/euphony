@@ -1,30 +1,27 @@
-//
-// Created by desig on 2021-07-25.
-//
-
 #ifndef EUPHONY_BASECODEC_H
 #define EUPHONY_BASECODEC_H
 
-#include "Definitions.h"
+#include "Charset.h"
 #include <string>
 using std::string;
 
 namespace Euphony {
     class BaseCodec {
-        CharacterSet characterSet;
+        Charset* charset;
     public:
         virtual ~BaseCodec() = default;
 
-        CharacterSet getCharacterSet() {
-            return characterSet;
+        Charset* getCharset() {
+            return charset;
         }
 
-        void setCharacterSet(CharacterSet charSet) {
-            characterSet = charSet;
+        void setCharset(Charset* charSet) {
+            charset = charSet;
         }
 
         virtual string encode(string src) = 0;
         virtual string decode(string src) = 0;
+        virtual int convertChar2Int(char src) = 0;
     };
 }
 

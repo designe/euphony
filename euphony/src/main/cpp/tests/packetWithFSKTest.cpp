@@ -4,6 +4,7 @@
 #include <FSK.h>
 #include <FFTProcessor.h>
 #include <tuple>
+#include <ASCIICharset.h>
 
 using namespace Euphony;
 
@@ -26,7 +27,9 @@ public:
 
     void allocatePacket() {
         EXPECT_EQ(pkt, nullptr);
-        pkt = new Packet();
+        Base16* base16 = new Base16();
+        base16->setCharset(new ASCIICharset());
+        pkt = new Packet(base16);
         ASSERT_NE(pkt, nullptr);
     }
 

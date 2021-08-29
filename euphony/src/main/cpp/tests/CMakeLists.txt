@@ -18,7 +18,8 @@ add_executable(
         packetTest.cpp
         packetWithFSKTest.cpp
         packetErrorDetectorTest.cpp
-        defulatCharsetTest.cpp
+        defaultCharsetTest.cpp
+        asciiCharsetTest.cpp
 )
 
 target_link_libraries(${TEST_EUPHONY} PUBLIC euphony gtest)

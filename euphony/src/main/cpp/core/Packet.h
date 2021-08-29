@@ -11,7 +11,7 @@ using std::vector;
 namespace Euphony {
     class Packet {
     public:
-        Packet():base16(Base16()) {}
+        Packet(BaseCodec* baseSource):baseCodec(baseSource) {}
 
         string create(string source);
         void push(int data);
@@ -20,7 +20,7 @@ namespace Euphony {
         string toString();
 
     private:
-        Base16 base16;
+        BaseCodec* baseCodec;
         vector<int> payload;
         int checksum;
         int parityCode;
