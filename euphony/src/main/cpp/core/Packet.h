@@ -5,28 +5,26 @@
 #include <vector>
 #include <Base16.h>
 
-using std::string;
-using std::vector;
-
 namespace Euphony {
     class Packet {
     public:
-        Packet(BaseCodec* baseSource):baseCodec(baseSource) {}
+        Packet(const HexVector& source);
 
-        string create(string source);
-        void push(int data);
         void clear();
-        string getStrPayload();
+        string getPayloadStr() const;
         string toString();
 
     private:
-        BaseCodec* baseCodec;
-        vector<int> payload;
+        Charset* charset;
+        Base* payload;
+    public:
+        void setPayload(Base *payload);
+
+    private:
         int checksum;
         int parityCode;
         bool isVerified;
-
-        string makeErrorDetectorCode();
+        void initialize();
     };
 }
 

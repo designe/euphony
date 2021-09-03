@@ -30,6 +30,7 @@ set(EUPHONY_SRC
         core/source/ASCIICharset.cpp
         core/source/FFTModel.cpp
         core/source/FFTProcessor.cpp
+        core/source/HexVector.cpp
         core/source/Wave.cpp
         core/source/WaveBuilder.cpp
         core/source/WaveGenerator.cpp

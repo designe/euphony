@@ -23,18 +23,22 @@ TEST_P(PacketErrorDetectorTestFixture, PacketErrorDetectorTest)
 
 TEST_F(PacketErrorDetectorTestFixture, ChecksumTest)
 {
-    vector<int> source {0x6, 0x8, 0x6, 0x5, 0x6, 0xc, 0x6, 0xc, 0x6, 0xf};
-    EXPECT_EQ(PacketErrorDetector::makeChecksum(source), 14);
-    EXPECT_EQ(PacketErrorDetector::verifyChecksum(source, 14), true);
-    EXPECT_EQ(PacketErrorDetector::verifyChecksum(source, 13), false);
+    vector<int8_t> source {0x6, 0x8, 0x6, 0x5, 0x6, 0xc, 0x6, 0xc, 0x6, 0xf};
+
+    HexVector hv = HexVector(source);
+    EXPECT_EQ(PacketErrorDetector::makeChecksum(hv), 14);
+    EXPECT_EQ(PacketErrorDetector::verifyChecksum(hv, 14), true);
+    EXPECT_EQ(PacketErrorDetector::verifyChecksum(hv, 13), false);
 }
 
 TEST_F(PacketErrorDetectorTestFixture, ParityCodeTest)
 {
-    vector<int> source {0x6, 0x8, 0x6, 0x5, 0x6, 0xc, 0x6, 0xc, 0x6, 0xf};
-    EXPECT_EQ(PacketErrorDetector::makeParallelParity(source), 4);
-    EXPECT_EQ(PacketErrorDetector::verifyParallelParity(source, 4), true);
-    EXPECT_EQ(PacketErrorDetector::verifyParallelParity(source, 5), false);
+    vector<int8_t> source {0x6, 0x8, 0x6, 0x5, 0x6, 0xc, 0x6, 0xc, 0x6, 0xf};
+
+    HexVector hv = HexVector(source);
+    EXPECT_EQ(PacketErrorDetector::makeParallelParity(hv), 4);
+    EXPECT_EQ(PacketErrorDetector::verifyParallelParity(hv, 4), true);
+    EXPECT_EQ(PacketErrorDetector::verifyParallelParity(hv, 5), false);
 }
 
 INSTANTIATE_TEST_CASE_P(

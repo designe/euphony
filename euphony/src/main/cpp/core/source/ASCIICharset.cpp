@@ -2,20 +2,29 @@
 #include <sstream>
 #include <iomanip>
 
-string Euphony::ASCIICharset::encode(string src) {
-    std::ostringstream result;
-    result << std::setw(2) << std::setfill('0') << std::hex;
-    std::copy(src.begin(), src.end(), std::ostream_iterator<unsigned int>(result, ""));
-    return result.str();
+using namespace Euphony;
+
+HexVector ASCIICharset::encode(std::string src) {
+    HexVector result(src.size());
+
+    for(char &c : src) {
+        result.pushBack(c);
+    }
+
+    return result;
 }
 
-string Euphony::ASCIICharset::decode(string src) {
-    string result = "";
+std::string ASCIICharset::decode(const HexVector &src) {
+    std::string result = "";
 
-    for(int i = 0; i < src.length() - 1; i+=2) {
-        string c = src.substr(i, 2);
-        result.push_back((char) (int) strtol(c.c_str(), nullptr, 16));
+    for(auto hexData : src) {
+        result.push_back(hexData);
     }
+    /*
+    for(int i = 0; i < src.getSize() - 1; i+=2) {
+        std::string c = src.substr(i, 2);
+        result.push_back((char) (int) strtol(c.c_str(), nullptr, 16));
+    }*/
 
     return result;
 }

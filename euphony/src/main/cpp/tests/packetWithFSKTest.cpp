@@ -25,14 +25,6 @@ public:
         ASSERT_NE(fft, nullptr);
     }
 
-    void allocatePacket() {
-        EXPECT_EQ(pkt, nullptr);
-        Base16* base16 = new Base16();
-        base16->setCharset(new ASCIICharset());
-        pkt = new Packet(base16);
-        ASSERT_NE(pkt, nullptr);
-    }
-
     FSK* fsk = nullptr;
     FFTProcessor* fft = nullptr;
     Packet* pkt = nullptr;
@@ -42,18 +34,22 @@ TEST_P(PacketWithFSKTestFixture, PacketFSKTest)
 {
     createFSK();
     createFFT();
-    allocatePacket();
 
     string source;
     string expectedResult;
 
     std::tie(source, expectedResult) = GetParam();
-    string actualResultCode = pkt->create(source);
+    HexVector hv = ASCIICharset().encode(source);
+    pkt = new Packet(hv);
+
+    string actualResultCode = pkt->toString();
     EXPECT_EQ(actualResultCode, expectedResult);
 
-    auto fskResult = fsk->modulate(pkt->getStrPayload());
+    auto fskResult = fsk->modulate(pkt->getPayloadStr());
     EXPECT_EQ(fskResult.size(), source.size() * 2);
     pkt->clear();
+
+    HexVector hexVector = HexVector(fskResult.size());
 
     for (auto wave : fskResult) {
         auto vectorInt16Source = wave->getInt16Source();
@@ -63,8 +59,10 @@ TEST_P(PacketWithFSKTestFixture, PacketFSKTest)
         int resultBufSize = fft->getResultSize();
 
         int data = fsk->demodulate(resultBuf, resultBufSize);
-        pkt->push(data);
+        hexVector.pushBack(data);
     }
+
+    pkt->setPayload(new Base16(hexVector));
 
     EXPECT_EQ(expectedResult, pkt->toString());
     pkt->clear();

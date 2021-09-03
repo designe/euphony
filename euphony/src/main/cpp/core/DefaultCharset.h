@@ -9,8 +9,8 @@ namespace Euphony {
     public:
         DefaultCharset() = default;
         ~DefaultCharset() = default;
-        string encode(string src);
-        string decode(string src);
+        HexVector encode(std::string src);
+        std::string decode(const HexVector &src);
     };
 }
 

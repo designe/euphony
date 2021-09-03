@@ -1,10 +1,10 @@
 #include "../DefaultCharset.h"
+using namespace Euphony;
 
-
-string Euphony::DefaultCharset::encode(string src) {
-    return src;
+HexVector DefaultCharset::encode(std::string src) {
+    return HexVector(src);
 }
 
-string Euphony::DefaultCharset::decode(string src) {
-    return src;
+std::string DefaultCharset::decode(const HexVector& src) {
+    return src.toString();
 }

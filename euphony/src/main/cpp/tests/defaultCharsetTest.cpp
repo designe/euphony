@@ -5,7 +5,7 @@
 
 using namespace Euphony;
 
-typedef std::tuple<string> TestParamType;
+typedef std::tuple<std::string> TestParamType;
 
 class DefaultCharsetTestFixture : public ::testing::TestWithParam<TestParamType> {
 
@@ -19,29 +19,15 @@ public:
     Charset* charset = nullptr;
 };
 
-
-TEST_P(DefaultCharsetTestFixture, EncodingTest)
-{
-    openCharset();
-
-    string source;
-
-    std::tie(source) = GetParam();
-
-    string actualResult = charset->encode(source);
-    EXPECT_EQ(actualResult, source);
-}
-
-
 TEST_P(DefaultCharsetTestFixture, DecodingTest)
 {
     openCharset();
 
-    string source;
+    std::string source;
 
     std::tie(source) = GetParam();
 
-    string actualResult = charset->decode(source);
+    std::string actualResult = charset->decode(source);
     EXPECT_EQ(actualResult, source);
 }
 

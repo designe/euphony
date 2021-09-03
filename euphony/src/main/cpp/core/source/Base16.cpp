@@ -1,20 +1,13 @@
 #include "../Base16.h"
 #include <sstream>
 #include <iomanip>
-#include <DefaultCharset.h>
 
-string Euphony::Base16::encode(string src) {
-    if(getCharset() == nullptr)
-        setCharset(new DefaultCharset());
+using namespace Euphony;
 
-    return getCharset()->encode(src);
-}
+Base16::Base16(const HexVector &hexVector) : hexVector(hexVector) { }
 
-string Euphony::Base16::decode(string src) {
-    if(getCharset() == nullptr)
-        setCharset(new DefaultCharset());
-
-    return getCharset()->decode(src);
+string Base16::getBaseString() {
+    return hexVector.toString();
 }
 
 int Euphony::Base16::convertChar2Int(char source) {
@@ -33,4 +26,10 @@ int Euphony::Base16::convertChar2Int(char source) {
 
     return -1;
 }
+
+const Euphony::HexVector &Euphony::Base16::getHexVector() const {
+    return hexVector;
+}
+
+
 

@@ -11,28 +11,20 @@ typedef std::tuple<string, string> TestParamType;
 class PacketTestFixture : public ::testing::TestWithParam<TestParamType> {
 
 public:
-    void allocatePacket() {
-        EXPECT_EQ(pkt, nullptr);
-        Base16* base16 = new Base16();
-        base16->setCharset(new ASCIICharset());
-        pkt = new Packet(base16);
-        ASSERT_NE(pkt, nullptr);
-    }
-
     Packet* pkt = nullptr;
 };
 
-TEST_P(PacketTestFixture, PacketCreationTest)
+TEST_P(PacketTestFixture, PacketCreationForASCIITest)
 {
-    allocatePacket();
-
     string source;
     string expectedResult;
 
     std::tie(source, expectedResult) = GetParam();
 
-    string actualResult = pkt->create(source);
-    EXPECT_EQ(actualResult, expectedResult);
+    HexVector hv = ASCIICharset().encode(source);
+    pkt - new Packet(hv);
+
+    EXPECT_EQ(pkt->toString(), expectedResult);
 }
 
 INSTANTIATE_TEST_CASE_P(

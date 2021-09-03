@@ -1,62 +1,49 @@
-
 #include "../Packet.h"
 #include "../PacketErrorDetector.h"
 #include <sstream>
 using namespace Euphony;
 
-string Packet::create(string source) {
-    std::stringstream result;
 
-    string encodedCode = baseCodec->encode(source);
-    for(char& c : encodedCode) {
-        payload.push_back(baseCodec->convertChar2Int(c));
-    }
-
-    string errorCode = makeErrorDetectorCode();
-
-    result << "S" << encodedCode << errorCode;
-    return result.str();
+Packet::Packet(const HexVector& source) {
+    payload = new Base16(source);
+    initialize();
 }
 
-void Packet::push(int data) {
-    payload.push_back(data);
+
+void Packet::initialize() {
+    string errorCode = PacketErrorDetector::makeParityAndChecksum(payload->getHexVector());
+    this->checksum = payload->convertChar2Int(errorCode.at(0));
+    this->parityCode = payload->convertChar2Int(errorCode.at(1));
+
 }
 
 void Packet::clear() {
     this->checksum = -1;
     this->parityCode = -1;
     this->isVerified = false;
-    (this->payload).clear();
+    delete payload;
 }
 
-string Packet::makeErrorDetectorCode() {
-    string errorCode = PacketErrorDetector::makeParityAndChecksum(payload);
-    this->checksum = Base16().convertChar2Int(errorCode.at(0));
-    this->parityCode = Base16().convertChar2Int(errorCode.at(1));
-    this->isVerified = true;
-
-    return errorCode;
-}
-
-
-string Packet::getStrPayload() {
-    std::stringstream result;
-
-    for(auto data : payload) {
-        result << std::hex << data;
-    }
-
-    return result.str();
+string Packet::getPayloadStr() const {
+    return payload->getBaseString();
 }
 
 string Packet::toString() {
     std::stringstream result;
 
     result << "S";
-    for(auto data : payload) {
+    for(auto data : payload->getBaseString()) {
         result << std::hex << data;
     }
-    result << makeErrorDetectorCode();
+
+    result << std::to_string(checksum) << std::to_string(parityCode);
 
     return result.str();
+}
+
+void Packet::setPayload(Base *payload) {
+    if(Packet::payload != nullptr)
+        delete Packet::payload;
+
+    Packet::payload = payload;
 }

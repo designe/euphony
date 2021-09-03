@@ -5,7 +5,7 @@
 
 using namespace Euphony;
 
-typedef std::tuple<string, string> TestParamType;
+typedef std::tuple<std::string, std::string> TestParamType;
 
 class ASCIICharsetTestFixture : public ::testing::TestWithParam<TestParamType> {
 
@@ -24,13 +24,13 @@ TEST_P(ASCIICharsetTestFixture, EncodingTest)
 {
     openCharset();
 
-    string source;
-    string expectedResult;
+    std::string source;
+    std::string expectedResult;
 
     std::tie(source, expectedResult) = GetParam();
 
-    string actualResult = charset->encode(source);
-    EXPECT_EQ(actualResult, expectedResult);
+    HexVector actualResult = charset->encode(source);
+    EXPECT_EQ(actualResult.toString(), expectedResult);
 }
 
 
@@ -38,12 +38,13 @@ TEST_P(ASCIICharsetTestFixture, DecodingTest)
 {
     openCharset();
 
-    string source;
-    string expectedResult;
+    std::string source;
+    std::string expectedResult;
 
     std::tie(expectedResult, source) = GetParam();
+    HexVector hv = HexVector(source);
 
-    string actualResult = charset->decode(source);
+    std::string actualResult = charset->decode(hv);
     EXPECT_EQ(actualResult, expectedResult);
 }
 

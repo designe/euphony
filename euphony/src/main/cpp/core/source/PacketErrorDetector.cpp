@@ -2,7 +2,7 @@
 #include "../Base16.h"
 #include <sstream>
 
-string Euphony::PacketErrorDetector::makeParityAndChecksum(vector<int> payload) {
+string Euphony::PacketErrorDetector::makeParityAndChecksum(const HexVector& payload) {
     char hexArray[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
                          'a', 'b', 'c', 'd', 'e', 'f'};
 
@@ -30,17 +30,11 @@ string Euphony::PacketErrorDetector::makeParityAndChecksum(vector<int> payload) 
 }
 
 string Euphony::PacketErrorDetector::makeParityAndChecksum(string payload) {
-    std::vector<int> intPayload;
-    intPayload.reserve(payload.size());
-
-    for(char& c : payload) {
-        intPayload.push_back(Base16().convertChar2Int(c));
-    }
-
-    return makeParityAndChecksum(intPayload);
+    HexVector hexVector = HexVector(payload);
+    return makeParityAndChecksum(hexVector);
 }
 
-int Euphony::PacketErrorDetector::makeChecksum(vector<int> payload) {
+int Euphony::PacketErrorDetector::makeChecksum(const HexVector& payload) {
     int payloadSum = 0;
 
     for(int v : payload) {
@@ -53,7 +47,7 @@ int Euphony::PacketErrorDetector::makeChecksum(vector<int> payload) {
     return payloadSum;
 }
 
-int Euphony::PacketErrorDetector::makeParallelParity(vector<int> payload) {
+int Euphony::PacketErrorDetector::makeParallelParity(const HexVector& payload) {
     int evenParity[4] = {0,};
 
     for(int v : payload) {
@@ -70,7 +64,7 @@ int Euphony::PacketErrorDetector::makeParallelParity(vector<int> payload) {
     return evenParityResult;
 }
 
-bool Euphony::PacketErrorDetector::verifyChecksum(vector<int> payload, int checksum) {
+bool Euphony::PacketErrorDetector::verifyChecksum(const HexVector& payload, int checksum) {
     int checksumResult = makeChecksum(payload);
 
     if(checksumResult != checksum)
@@ -79,7 +73,7 @@ bool Euphony::PacketErrorDetector::verifyChecksum(vector<int> payload, int check
         return true;
 }
 
-bool Euphony::PacketErrorDetector::verifyParallelParity(vector<int> payload, int parity) {
+bool Euphony::PacketErrorDetector::verifyParallelParity(const HexVector& payload, int parity) {
     int parityResult = makeParallelParity(payload);
 
     if(parityResult != parity)

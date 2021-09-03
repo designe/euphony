@@ -29,7 +29,7 @@ public:
 
 };
 
-TEST_P(FSKTestFixture, FSKModulationTest)
+TEST_P(FSKTestFixture, FSKModulationString2StringTest)
 {
     createFSK();
     createFFT();
@@ -43,8 +43,9 @@ TEST_P(FSKTestFixture, FSKModulationTest)
     auto resultFSK = fsk->modulate(inputCode);
     EXPECT_EQ(resultFSK.size(), expectedCodeLength);
 
-    for(auto it = resultFSK.begin(); it != resultFSK.end(); it++) {
-        auto vectorInt16Source = (*it)->getInt16Source();
+    for(auto wave : resultFSK) {
+        auto vectorInt16Source = wave->getInt16Source();
+
         int16_t* int16Source = &vectorInt16Source[0];
 
         float *resultBuf = fft->makeSpectrum(int16Source);

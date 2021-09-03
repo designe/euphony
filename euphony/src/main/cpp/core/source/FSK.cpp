@@ -2,11 +2,16 @@
 #include "../FSK.h"
 #include "../WaveBuilder.h"
 #include "../Base16Exception.h"
+#include "../Packet.h"
 
 using namespace Euphony;
 using std::string;
 using std::vector;
 using std::make_shared;
+
+vector<shared_ptr<Wave>> FSK::modulate(Packet* packet) {
+    return this->modulate(packet->toString());
+}
 
 vector<shared_ptr<Wave>> FSK::modulate(string code) {
 
