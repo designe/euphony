@@ -24,6 +24,7 @@ target_link_libraries(
 set(EUPHONY_SRC
         arms/kiss_fft.c
         arms/kiss_fftr.c
+        core/source/Base2.cpp
         core/source/Base16.cpp
         core/source/Base16Exception.cpp
         core/source/DefaultCharset.cpp
