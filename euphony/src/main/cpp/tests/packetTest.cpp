@@ -6,7 +6,7 @@
 
 using namespace Euphony;
 
-typedef std::tuple<string, string> TestParamType;
+typedef std::tuple<std::string, std::string> TestParamType;
 
 class PacketTestFixture : public ::testing::TestWithParam<TestParamType> {
 
@@ -16,8 +16,8 @@ public:
 
 TEST_P(PacketTestFixture, PacketCreationForASCIITest)
 {
-    string source;
-    string expectedResult;
+    std::string source;
+    std::string expectedResult;
 
     std::tie(source, expectedResult) = GetParam();
 

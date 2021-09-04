@@ -14,9 +14,9 @@ namespace Euphony {
 
         int8_t getChecksum();
         int8_t getParityCode();
-        string getPayloadStr() const;
+        std::string getPayloadStr() const;
         void setPayload(Base *payload);
-        string toString();
+        std::string toString();
 
     private:
         Charset* charset;

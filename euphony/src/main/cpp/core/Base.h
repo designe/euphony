@@ -3,14 +3,13 @@
 
 #include "Charset.h"
 #include <string>
-using std::string;
 
 namespace Euphony {
     class Base {
     public:
         virtual ~Base() = default;
 
-        virtual string getBaseString() = 0;
+        virtual std::string getBaseString() = 0;
         virtual const HexVector &getHexVector() const = 0;
         virtual int convertChar2Int(char src) const = 0;
         virtual char convertInt2Char(int src) const = 0;

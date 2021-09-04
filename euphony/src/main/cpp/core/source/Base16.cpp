@@ -1,12 +1,12 @@
 #include "../Base16.h"
-#include <sstream>
 #include <iomanip>
 
 using namespace Euphony;
 
-Base16::Base16(const HexVector &hexVector) : hexVector(hexVector) { }
+Base16::Base16(const HexVector &hexVectorSrc)
+: hexVector(hexVectorSrc) { }
 
-string Base16::getBaseString() {
+std::string Base16::getBaseString() {
     return hexVector.toString();
 }
 

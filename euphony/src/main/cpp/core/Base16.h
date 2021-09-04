@@ -8,10 +8,9 @@ namespace Euphony {
 
     class Base16 : public Base {
     public:
-        Base16(const HexVector &hexVector);
-
+        Base16(const HexVector &hexVectorSrc);
         ~Base16() = default;
-        string getBaseString();
+        std::string getBaseString();
         const HexVector &getHexVector() const;
         int convertChar2Int(char source) const;
         char convertInt2Char(int source) const;

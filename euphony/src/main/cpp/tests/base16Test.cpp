@@ -6,7 +6,7 @@
 
 using namespace Euphony;
 
-typedef std::tuple<std::vector<u_int8_t>, string> TestParamType;
+typedef std::tuple<std::vector<u_int8_t>, std::string> TestParamType;
 
 class Base16TranslationFixture : public ::testing::TestWithParam<TestParamType> {
 
@@ -17,12 +17,12 @@ public:
 TEST_P(Base16TranslationFixture, DefaultEncodingTest)
 {
     std::vector<u_int8_t> source;
-    string expectedEncodedResult;
+    std::string expectedEncodedResult;
 
     std::tie(source, expectedEncodedResult) = GetParam();
     HexVector hv = HexVector(source);
     base16 = new Base16(hv);
-    string actualResult = base16->getBaseString();
+    std::string actualResult = base16->getBaseString();
     EXPECT_EQ(actualResult, expectedEncodedResult);
 }
 
@@ -48,4 +48,3 @@ INSTANTIATE_TEST_SUITE_P(
                     0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a
                 }, "4142434445464748494a4b4c4d4e4f505152535455565758595a")
         ));
-
