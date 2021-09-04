@@ -15,16 +15,13 @@ HexVector ASCIICharset::encode(std::string src) {
 }
 
 std::string ASCIICharset::decode(const HexVector &src) {
-    std::string result = "";
+    std::string result;
 
-    for(auto hexData : src) {
-        result.push_back(hexData);
-    }
-    /*
-    for(int i = 0; i < src.getSize() - 1; i+=2) {
-        std::string c = src.substr(i, 2);
+    std::string stringSrc = src.toString();
+    for(int i = 0; i < stringSrc.size() - 1; i+=2) {
+        std::string c = stringSrc.substr(i, 2);
         result.push_back((char) (int) strtol(c.c_str(), nullptr, 16));
-    }*/
+    }
 
     return result;
 }

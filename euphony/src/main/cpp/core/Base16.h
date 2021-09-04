@@ -13,7 +13,8 @@ namespace Euphony {
         ~Base16() = default;
         string getBaseString();
         const HexVector &getHexVector() const;
-        int convertChar2Int(char source);
+        int convertChar2Int(char source) const;
+        char convertInt2Char(int source) const;
 
     private:
         HexVector hexVector;

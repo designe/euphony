@@ -12,7 +12,8 @@ namespace Euphony {
 
         virtual string getBaseString() = 0;
         virtual const HexVector &getHexVector() const = 0;
-        virtual int convertChar2Int(char src) = 0;
+        virtual int convertChar2Int(char src) const = 0;
+        virtual char convertInt2Char(int src) const = 0;
     };
 }
 

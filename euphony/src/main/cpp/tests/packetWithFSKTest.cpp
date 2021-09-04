@@ -47,11 +47,10 @@ TEST_P(PacketWithFSKTestFixture, PacketFSKTest)
 
     auto fskResult = fsk->modulate(pkt->getPayloadStr());
     EXPECT_EQ(fskResult.size(), source.size() * 2);
-    pkt->clear();
 
     HexVector hexVector = HexVector(fskResult.size());
 
-    for (auto wave : fskResult) {
+    for (const auto& wave : fskResult) {
         auto vectorInt16Source = wave->getInt16Source();
         int16_t* int16Source = &vectorInt16Source[0];
 
@@ -62,6 +61,7 @@ TEST_P(PacketWithFSKTestFixture, PacketFSKTest)
         hexVector.pushBack(data);
     }
 
+    pkt->clear();
     pkt->setPayload(new Base16(hexVector));
 
     EXPECT_EQ(expectedResult, pkt->toString());

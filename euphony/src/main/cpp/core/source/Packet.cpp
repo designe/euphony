@@ -11,10 +11,10 @@ Packet::Packet(const HexVector& source) {
 
 
 void Packet::initialize() {
-    string errorCode = PacketErrorDetector::makeParityAndChecksum(payload->getHexVector());
+    string errorCode = PacketErrorDetector::makeParityAndChecksum(payload->getBaseString());
     this->checksum = payload->convertChar2Int(errorCode.at(0));
     this->parityCode = payload->convertChar2Int(errorCode.at(1));
-
+    this->isVerified = true;
 }
 
 void Packet::clear() {
@@ -22,6 +22,7 @@ void Packet::clear() {
     this->parityCode = -1;
     this->isVerified = false;
     delete payload;
+    payload = nullptr;
 }
 
 string Packet::getPayloadStr() const {
@@ -31,19 +32,28 @@ string Packet::getPayloadStr() const {
 string Packet::toString() {
     std::stringstream result;
 
-    result << "S";
-    for(auto data : payload->getBaseString()) {
-        result << std::hex << data;
-    }
-
-    result << std::to_string(checksum) << std::to_string(parityCode);
+    result << "S" <<
+    payload->getBaseString() <<
+    getChecksum() <<
+    getParityCode();
 
     return result.str();
 }
 
-void Packet::setPayload(Base *payload) {
-    if(Packet::payload != nullptr)
-        delete Packet::payload;
+void Packet::setPayload(Base* payloadSrc) {
+    if(payload != nullptr) {
+        delete payload;
+        payload = nullptr;
+    }
 
-    Packet::payload = payload;
+    payload = payloadSrc;
+    initialize();
+}
+
+int8_t Packet::getChecksum() {
+    return payload->convertInt2Char(checksum);
+}
+
+int8_t Packet::getParityCode() {
+    return payload->convertInt2Char(parityCode);
 }

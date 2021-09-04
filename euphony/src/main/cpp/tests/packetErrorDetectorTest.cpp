@@ -21,9 +21,23 @@ TEST_P(PacketErrorDetectorTestFixture, PacketErrorDetectorTest)
     EXPECT_EQ(expectedResult, actualResult);
 }
 
+TEST_F(PacketErrorDetectorTestFixture, ErrorCodeTest)
+{
+    vector<u_int8_t> source {0x6, 0x1};
+    std::string expectedResult = "97";
+    HexVector hv = HexVector(source);
+    EXPECT_EQ(expectedResult, PacketErrorDetector::makeParityAndChecksum(hv.getHexSource()));
+
+    vector<u_int8_t> source2 {0x61, 0x62, 0x63};
+    std::string expectedResult2 = "86";
+    HexVector hv2 = HexVector(source2);
+    EXPECT_EQ(expectedResult2, PacketErrorDetector::makeParityAndChecksum(hv2.getHexSource()));
+}
+
+
 TEST_F(PacketErrorDetectorTestFixture, ChecksumTest)
 {
-    vector<int8_t> source {0x6, 0x8, 0x6, 0x5, 0x6, 0xc, 0x6, 0xc, 0x6, 0xf};
+    vector<u_int8_t> source {0x6, 0x8, 0x6, 0x5, 0x6, 0xc, 0x6, 0xc, 0x6, 0xf};
 
     HexVector hv = HexVector(source);
     EXPECT_EQ(PacketErrorDetector::makeChecksum(hv), 14);
@@ -33,7 +47,7 @@ TEST_F(PacketErrorDetectorTestFixture, ChecksumTest)
 
 TEST_F(PacketErrorDetectorTestFixture, ParityCodeTest)
 {
-    vector<int8_t> source {0x6, 0x8, 0x6, 0x5, 0x6, 0xc, 0x6, 0xc, 0x6, 0xf};
+    vector<u_int8_t> source {0x6, 0x8, 0x6, 0x5, 0x6, 0xc, 0x6, 0xc, 0x6, 0xf};
 
     HexVector hv = HexVector(source);
     EXPECT_EQ(PacketErrorDetector::makeParallelParity(hv), 4);

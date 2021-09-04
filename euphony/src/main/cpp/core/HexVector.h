@@ -9,23 +9,25 @@ namespace Euphony {
     public:
         HexVector(int size);
         HexVector(const HexVector& copy);
-        HexVector(const std::string hexString);
-        HexVector(const std::vector<int8_t>& hexVectorCopy);
+        HexVector(const std::string& hexString);
+        HexVector(const std::vector<u_int8_t>& hexVectorCopy);
         ~HexVector();
 
-        void pushBack(int8_t hexByte);
+        void pushBack(u_int8_t hexByte);
         void popBack();
         std::string toString() const;
-        const std::vector<int8_t> &getHexSource() const;
-        void setHexSource(const std::vector<int8_t> &hexSource);
+        const std::vector<u_int8_t> &getHexSource() const;
+        void setHexSource(const std::vector<u_int8_t> &hexSource);
         int getSize() const;
         void clear();
 
-        std::__wrap_iter<std::vector<signed char, std::allocator<signed char>>::const_pointer> begin() const;
-        std::__wrap_iter<std::vector<signed char, std::allocator<signed char>>::const_pointer> end() const;
+        std::__wrap_iter<std::vector<unsigned char, std::allocator<unsigned char>>::const_pointer>
+        begin() const;
+        std::__wrap_iter<std::vector<unsigned char, std::allocator<unsigned char>>::const_pointer>
+        end() const;
 
     private:
-        std::vector<int8_t> hexSource;
+        std::vector<u_int8_t> hexSource;
     };
 }
 

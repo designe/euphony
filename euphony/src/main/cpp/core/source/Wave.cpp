@@ -9,13 +9,13 @@
 using namespace Euphony;
 
 Euphony::Wave::Wave()
-:mHz(0),
+: mHz(0),
 mSize(0),
 crossfadeType(NONE)
 {}
 
 Euphony::Wave::Wave(int hz, int size)
-:mHz(hz),
+: mHz(hz),
 mSize(size),
 crossfadeType(NONE)
 {
@@ -112,8 +112,8 @@ std::vector<int16_t> Euphony::Wave::getInt16Source() {
 
     result.reserve(mSource.size());
 
-    for(int i = 0; i < mSource.size(); i++) {
-        result.push_back(convertFloat2Int16(mSource[i]));
+    for(float src : mSource) {
+        result.push_back(convertFloat2Int16(src));
     }
 
     return result;

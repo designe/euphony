@@ -11,18 +11,19 @@ namespace Euphony {
         Packet(const HexVector& source);
 
         void clear();
+
+        int8_t getChecksum();
+        int8_t getParityCode();
         string getPayloadStr() const;
+        void setPayload(Base *payload);
         string toString();
 
     private:
         Charset* charset;
         Base* payload;
-    public:
-        void setPayload(Base *payload);
 
-    private:
-        int checksum;
-        int parityCode;
+        int8_t checksum;
+        int8_t parityCode;
         bool isVerified;
         void initialize();
     };

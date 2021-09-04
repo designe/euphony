@@ -22,8 +22,9 @@ TEST_P(PacketTestFixture, PacketCreationForASCIITest)
     std::tie(source, expectedResult) = GetParam();
 
     HexVector hv = ASCIICharset().encode(source);
-    pkt - new Packet(hv);
+    pkt = new Packet(hv);
 
+    // Check total result
     EXPECT_EQ(pkt->toString(), expectedResult);
 }
 
