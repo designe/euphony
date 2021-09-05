@@ -17,7 +17,7 @@ WaveBuilder& WaveBuilder::setCrossfade(CrossfadeType type) {
     return *this;
 }
 
-shared_ptr<Wave> WaveBuilder::build() {
+std::shared_ptr<Wave> WaveBuilder::build() {
     if(wave.getSize() > 0 && wave.getHz() > 0) {
         wave.oscillate();
     }

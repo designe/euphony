@@ -13,7 +13,7 @@ typedef std::tuple<int, int> TestParamType;
 class WaveBuilderTestFixture : public ::testing::TestWithParam<TestParamType> {
 
 public:
-    shared_ptr<Wave> wave = nullptr;
+    std::shared_ptr<Wave> wave = nullptr;
 };
 
 TEST_P(WaveBuilderTestFixture, WaveBuilderUnitTest)

@@ -17,6 +17,7 @@ add_executable(
         waveBuilderTest.cpp
         FSKTest.cpp
         packetTest.cpp
+        packetBuilderTest.cpp
         packetWithFSKTest.cpp
         packetErrorDetectorTest.cpp
         defaultCharsetTest.cpp

@@ -41,6 +41,7 @@ set(EUPHONY_SRC
         core/source/RxEngine.cpp
         core/source/AudioStreamCallback.cpp
         core/source/Packet.cpp
+        core/source/PacketBuilder.cpp
         core/source/PacketErrorDetector.cpp
         native-connector.cpp
         )

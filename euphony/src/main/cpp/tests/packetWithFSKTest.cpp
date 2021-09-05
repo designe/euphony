@@ -5,6 +5,7 @@
 #include <FFTProcessor.h>
 #include <tuple>
 #include <ASCIICharset.h>
+#include <Base16.h>
 
 using namespace Euphony;
 

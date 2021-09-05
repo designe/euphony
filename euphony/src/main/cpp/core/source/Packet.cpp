@@ -1,8 +1,18 @@
 #include "../Packet.h"
+#include "../PacketBuilder.h"
 #include "../PacketErrorDetector.h"
 #include "../BaseFactory.h"
 #include <sstream>
 using namespace Euphony;
+
+
+Packet::Packet()
+        : baseType(BaseType::BASE16),
+          payload(nullptr),
+          checksum(nullptr),
+          parityCode(nullptr),
+          isVerified(false) {
+}
 
 Packet::Packet(const HexVector& source)
         : baseType(BaseType::BASE16),
@@ -20,10 +30,14 @@ Packet::Packet(const BaseType baseTypeSrc, const HexVector& source)
   checksum(nullptr),
   parityCode(nullptr),
   isVerified(false) {
-    payload = BaseFactory::create(baseTypeSrc, source);
+    payload = BaseFactory::create(baseType, source);
     initialize();
 }
 
+
+PacketBuilder Packet::create() {
+    return PacketBuilder();
+}
 
 void Packet::initialize() {
     //std::string errorCode = PacketErrorDetector::makeParityAndChecksum(payload->getBaseString());
@@ -87,5 +101,8 @@ BaseType Packet::getBaseType() const {
 
 void Packet::setBaseType(BaseType baseTypeSrc) {
     baseType = baseTypeSrc;
+    if(payload != nullptr) {
+        payload = BaseFactory::create(baseType, payload->getHexVector());
+        initialize();
+    }
 }
-

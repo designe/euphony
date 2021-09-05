@@ -36,7 +36,7 @@ namespace Euphony {
         BASE16 = 1,
     };
 
-    enum class CharacterSet : int32_t {
+    enum class CharsetType : int32_t {
         ASCII = 0,
         UTF8 = 1
     };
