@@ -14,7 +14,7 @@ public:
     Packet* pkt = nullptr;
 };
 
-TEST_P(PacketTestFixture, PacketCreationForASCIITest)
+TEST_P(PacketTestFixture, PacketCreationForASCIIAndBase16Test)
 {
     std::string source;
     std::string expectedResult;
@@ -25,6 +25,23 @@ TEST_P(PacketTestFixture, PacketCreationForASCIITest)
     pkt = new Packet(hv);
 
     // Check total result
+    EXPECT_EQ(pkt->toString(), expectedResult);
+}
+
+TEST_F(PacketTestFixture, PacketCreationForASCIIAndBase2Test)
+{
+    std::string source = "a";
+    std::string expectedResult = "S0110000110010111";
+    HexVector hv = ASCIICharset().encode(source);
+    pkt = new Packet(BaseType::BASE2, hv);
+    // Check total result
+    EXPECT_EQ(pkt->toString(), expectedResult);
+
+    pkt->clear();
+    source = "abc";
+    expectedResult = "S01100001011000100110001110000110";
+    hv = ASCIICharset().encode(source);
+    pkt->setPayload(hv);
     EXPECT_EQ(pkt->toString(), expectedResult);
 }
 
