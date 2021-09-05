@@ -31,10 +31,9 @@ namespace Euphony {
         CPFSK = 2
     };
 
-    enum class EncodingType : int32_t {
-        BASE16 = 0,
-        BASE32 = 1,
-        BASE64 = 2
+    enum class BaseType : int32_t {
+        BASE2 = 0,
+        BASE16 = 1,
     };
 
     enum class CharacterSet : int32_t {

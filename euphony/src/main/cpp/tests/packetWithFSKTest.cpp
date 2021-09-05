@@ -62,7 +62,7 @@ TEST_P(PacketWithFSKTestFixture, PacketFSKTest)
     }
 
     pkt->clear();
-    pkt->setPayload(new Base16(hexVector));
+    pkt->setPayload(std::make_shared<Base16>(hexVector));
 
     EXPECT_EQ(expectedResult, pkt->toString());
     pkt->clear();

@@ -1,11 +1,26 @@
 #include "../Packet.h"
 #include "../PacketErrorDetector.h"
+#include "../BaseFactory.h"
 #include <sstream>
 using namespace Euphony;
 
+Packet::Packet(const HexVector& source)
+        : baseType(BaseType::BASE16),
+          payload(nullptr),
+          checksum(-1),
+          parityCode(-1),
+          isVerified(false) {
+    payload = BaseFactory::create(baseType, source);
+    initialize();
+}
 
-Packet::Packet(const HexVector& source) {
-    payload = new Base16(source);
+Packet::Packet(const BaseType baseTypeSrc, const HexVector& source)
+: baseType(baseTypeSrc),
+  payload(nullptr),
+  checksum(-1),
+  parityCode(-1),
+  isVerified(false) {
+    payload = BaseFactory::create(baseTypeSrc, source);
     initialize();
 }
 
@@ -21,7 +36,7 @@ void Packet::clear() {
     this->checksum = -1;
     this->parityCode = -1;
     this->isVerified = false;
-    delete payload;
+    //delete payload;
     payload = nullptr;
 }
 
@@ -40,20 +55,22 @@ string Packet::toString() {
     return result.str();
 }
 
-void Packet::setPayload(Base* payloadSrc) {
-    if(payload != nullptr) {
-        delete payload;
-        payload = nullptr;
-    }
-
-    payload = payloadSrc;
+void Packet::setPayload(std::shared_ptr<Base> payloadSrc) {
+    payload = std::move(payloadSrc);
     initialize();
 }
 
-int8_t Packet::getChecksum() {
+
+void Packet::setPayload(const HexVector &source) {
+    payload = BaseFactory::create(baseType, source);
+    initialize();
+}
+
+u_int8_t Packet::getChecksum() {
     return payload->convertInt2Char(checksum);
 }
 
-int8_t Packet::getParityCode() {
+u_int8_t Packet::getParityCode() {
     return payload->convertInt2Char(parityCode);
 }
+
