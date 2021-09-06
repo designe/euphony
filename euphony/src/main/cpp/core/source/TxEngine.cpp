@@ -3,11 +3,14 @@
 //
 #include <oboe/Oboe.h>
 #include "Log.h"
+#include "../PacketBuilder.h"
 #include "../TxEngine.h"
 #include "../WaveGenerator.h"
 #include "../AudioStreamCallback.h"
 
-class Euphony::TxEngine::TxEngineImpl : public IRestartable{
+using namespace Euphony;
+
+class TxEngine::TxEngineImpl : public IRestartable{
 public:
     std::mutex mLock;
     std::shared_ptr<oboe::AudioStream> mStream;
@@ -18,9 +21,9 @@ public:
 
     int32_t mDeviceId = oboe::Unspecified;
     int32_t mChannelCount = oboe::Unspecified;
-    Status mStatus = STOP;
     oboe::AudioApi mAudioApi = oboe::AudioApi::Unspecified;
-
+    Status mStatus = STOP;
+    std::shared_ptr<Packet> txPacket = nullptr;
 
     TxEngineImpl() {
         createCallback();
@@ -89,6 +92,16 @@ public:
         return result;
     }
 
+    void setCode(std::string data)
+    {
+        txPacket = Packet::create()
+                .setPayloadWithASCII(data)
+                .basedOnBase16()
+                .build();
+
+    }
+
+
     void setBufferSizeInBursts(int32_t numBursts)
     {
         std::lock_guard<std::mutex> lock(mLock);
@@ -143,11 +156,12 @@ public:
     }
 };
 
-Euphony::TxEngine::TxEngine()
-: pImpl(std::make_unique<TxEngineImpl>())
-{ }
+TxEngine::TxEngine()
+: pImpl(std::make_unique<TxEngineImpl>()) { }
+
 
 Euphony::TxEngine::~TxEngine() = default;
+
 
 void Euphony::TxEngine::tap(bool isDown) {
     pImpl->mAudioSource->tap(isDown);
@@ -163,6 +177,10 @@ void Euphony::TxEngine::stop() {
 
 void Euphony::TxEngine::start() {
     pImpl->start();
+}
+
+void Euphony::TxEngine::setCode(std::string data) {
+    pImpl->setCode(data);
 }
 
 bool Euphony::TxEngine::isLatencyDetectionSupported() {

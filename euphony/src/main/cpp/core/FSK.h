@@ -8,8 +8,8 @@
 namespace Euphony {
     class FSK : public Modem {
     public:
-        std::vector<std::shared_ptr<Wave>> modulate(std::string code);
-        std::vector<std::shared_ptr<Wave>> modulate(Packet* packet);
+        WaveList modulate(std::string code);
+        WaveList modulate(Packet* packet);
         int demodulate(const float* source, const int size);
     private:
         const int getStartFreqIdx() const;

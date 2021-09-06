@@ -44,7 +44,16 @@ extern "C" {
     JNIEXPORT void JNICALL
     Java_co_euphony_tx_EuphonyTx_native_1setCode(JNIEnv *env, jobject thiz, jlong engine_handle,
                                                  jstring data) {
-        // TODO: implement native_setCode()
+        TxEngine *engine = reinterpret_cast<TxEngine *> (engine_handle);
+        if(engine == nullptr) {
+            LOGE("Engine handle is invalid, call createHandle() to create a new one");
+            return;
+        }
+
+        const char* inputData = env->GetStringUTFChars(data, 0);
+        const std::string inputStr = std::string(inputData);
+
+        engine->setCode(inputStr);
     }
 
     JNIEXPORT void JNICALL

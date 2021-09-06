@@ -2,6 +2,7 @@
 #define EUPHONY_MODEM_H
 
 #include <string>
+#include "Definitions.h"
 #include "Packet.h"
 #include "Wave.h"
 
@@ -13,8 +14,8 @@ namespace Euphony {
 
     class Modem {
     public:
-        virtual vector<shared_ptr<Wave>> modulate(string code) = 0;
-        virtual vector<shared_ptr<Wave>> modulate(Packet* packet) = 0;
+        virtual WaveList modulate(string code) = 0;
+        virtual WaveList modulate(Packet* packet) = 0;
 
         virtual int demodulate(const float* source, const int size) = 0;
 

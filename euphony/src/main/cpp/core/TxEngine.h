@@ -26,6 +26,8 @@ namespace Euphony {
 
         void start();
 
+        void setCode(std::string data);
+
         void setAudioApi(oboe::AudioApi audioApi);
 
         void setChannelCount(int channelCount);
