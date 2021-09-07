@@ -28,6 +28,10 @@ namespace Euphony {
 
         void setCode(std::string data);
 
+        std::string getCode();
+
+        std::string getGenCode();
+
         void setAudioApi(oboe::AudioApi audioApi);
 
         void setChannelCount(int channelCount);

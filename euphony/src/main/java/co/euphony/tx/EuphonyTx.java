@@ -124,18 +124,13 @@ public class EuphonyTx {
     }
 
     public void callAPI(double freq, EpnyAPIDuration duration) {
-
         if(mEngineHandle != 0) {
             native_setAudioFrequency(mEngineHandle, freq);
             native_setToneOn( mEngineHandle,true);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    native_setToneOn(mEngineHandle, false);
-                }
-            }, (duration == EpnyAPIDuration.LENGTH_SHORT) ? 200 : 500);
+            new Handler().postDelayed(() -> native_setToneOn(mEngineHandle, false), (duration == EpnyAPIDuration.LENGTH_SHORT) ? 200 : 500);
         }
     }
+
     public void setToneOn(boolean isToneOn) {
         if(mEngineHandle != 0) native_setToneOn(mEngineHandle, isToneOn);
     }
@@ -146,6 +141,18 @@ public class EuphonyTx {
 
     public void setCode(String data) {
         if(mEngineHandle != 0) native_setCode(mEngineHandle, data);
+    }
+
+    public String getCode() {
+        if(mEngineHandle != 0)
+            return native_getCode(mEngineHandle);
+        return null;
+    }
+
+    public String getGenCode() {
+        if(mEngineHandle != 0)
+            return native_getGenCode(mEngineHandle);
+        return null;
     }
 
     public void setAudioFrequency(double freq) {
@@ -202,6 +209,8 @@ public class EuphonyTx {
     private native void native_setToneOn(long engineHandle, boolean isToneOn);
     private native void native_setCountToneOn(long engineHandle, boolean isToneOn, int count);
     private native void native_setCode(long engineHandle, String data);
+    private native String native_getCode(long engineHandle);
+    private native String native_getGenCode(long engineHandle);
     private native void native_setAudioFrequency(long engineHandle, double frequency);
     private native void native_setAudioApi(long engineHandle, int audioApi);
     private native void native_setAudioDeviceId(long engineHandle, int deviceId);

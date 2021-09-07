@@ -30,8 +30,12 @@ public class EuTxManager {
 		txCore.setCode(data);
 	}
 
+	public String getCode() {
+		return txCore.getCode();
+	}
+
 	public String getGenCode() {
-		return genCode;
+		return txCore.getGenCode();
 	}
 
 	public short[] getOutStream() {

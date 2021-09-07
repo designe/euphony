@@ -2,6 +2,8 @@
 // Created by desig on 2020-08-15.
 //
 #include <oboe/Oboe.h>
+
+#include <utility>
 #include "Log.h"
 #include "../PacketBuilder.h"
 #include "../TxEngine.h"
@@ -50,7 +52,7 @@ public:
         mStreamBuilder.setPerformanceMode(mode)->openStream(mStream);
     }
 
-    void restart() {
+    void restart() override {
         start();
     }
 
@@ -95,10 +97,9 @@ public:
     void setCode(std::string data)
     {
         txPacket = Packet::create()
-                .setPayloadWithASCII(data)
+                .setPayloadWithASCII(std::move(data))
                 .basedOnBase16()
                 .build();
-
     }
 
 
@@ -151,7 +152,7 @@ public:
         return outputLatencyMillis;
     }
 
-    bool isLatencyDetectionSupported() {
+    bool isLatencyDetectionSupported() const {
         return mIsLatencyDetectionSupported;
     }
 };
@@ -160,61 +161,69 @@ TxEngine::TxEngine()
 : pImpl(std::make_unique<TxEngineImpl>()) { }
 
 
-Euphony::TxEngine::~TxEngine() = default;
+TxEngine::~TxEngine() = default;
 
 
-void Euphony::TxEngine::tap(bool isDown) {
+void TxEngine::tap(bool isDown) {
     pImpl->mAudioSource->tap(isDown);
 }
 
-void Euphony::TxEngine::setAudioFrequency(double freq) {
+void TxEngine::setAudioFrequency(double freq) {
     pImpl->mAudioSource->setFrequency(freq);
 }
 
-void Euphony::TxEngine::stop() {
+void TxEngine::stop() {
     pImpl->stop();
 }
 
-void Euphony::TxEngine::start() {
+void TxEngine::start() {
     pImpl->start();
 }
 
-void Euphony::TxEngine::setCode(std::string data) {
-    pImpl->setCode(data);
+void TxEngine::setCode(std::string data) {
+    pImpl->setCode(std::move(data));
 }
 
-bool Euphony::TxEngine::isLatencyDetectionSupported() {
+bool TxEngine::isLatencyDetectionSupported() {
     return pImpl->isLatencyDetectionSupported();
 }
 
-void Euphony::TxEngine::setAudioApi(oboe::AudioApi audioApi) {
+void TxEngine::setAudioApi(oboe::AudioApi audioApi) {
     pImpl->mAudioApi = audioApi;
 }
 
-void Euphony::TxEngine::setPerformance(oboe::PerformanceMode mode) {
+void TxEngine::setPerformance(oboe::PerformanceMode mode) {
     pImpl->setPerformance(mode);
 }
 
-void Euphony::TxEngine::setChannelCount(int channelCount) {
+void TxEngine::setChannelCount(int channelCount) {
     pImpl->mChannelCount = channelCount;
 }
 
-void Euphony::TxEngine::setDeviceId(int32_t deviceId) {
+void TxEngine::setDeviceId(int32_t deviceId) {
     pImpl->mDeviceId = deviceId;
 }
 
-int Euphony::TxEngine::getFramesPerBursts() {
+int TxEngine::getFramesPerBursts() {
     return pImpl->mStream->getFramesPerBurst();
 }
 
-void Euphony::TxEngine::setBufferSizeInBursts(int32_t numBursts) {
+void TxEngine::setBufferSizeInBursts(int32_t numBursts) {
     pImpl->setBufferSizeInBursts(numBursts);
 }
 
-double Euphony::TxEngine::getCurrentOutputLatencyMillis() {
+double TxEngine::getCurrentOutputLatencyMillis() {
     return pImpl->getCurrentOutputLatencyMillis();
 }
 
-Euphony::Status Euphony::TxEngine::getStatus() {
+Status Euphony::TxEngine::getStatus() {
     return pImpl->mStatus;
+}
+
+std::string TxEngine::getCode() {
+    return pImpl->txPacket->getPayloadStr();
+}
+
+std::string TxEngine::getGenCode() {
+    return pImpl->txPacket->toString();
 }

@@ -23,6 +23,7 @@ TEST_P(PacketBuilderTestFixture, CreationForASCIIAndBase16TestByPacketBuilder)
 
     pkt = Packet::create()
             .setPayloadWithASCII(source)
+            .basedOnBase16()
             .build();
 
     // Check total result
