@@ -21,45 +21,30 @@ namespace Euphony {
         ~TxEngine();
 
         void tap(bool isDown);
-
         void stop();
-
         void start();
-
         void setCode(std::string data);
-
         std::string getCode();
-
         std::string getGenCode();
-
+        void setCodingType(int codingTypeSrc);
+        void setMode(int modeSrc);
+        void setModulation(int modulationTypeSrc);
         void setAudioApi(oboe::AudioApi audioApi);
-
         void setChannelCount(int channelCount);
-
         void setDeviceId(int32_t deviceId);
-
         int getFramesPerBursts();
-
         void setBufferSizeInBursts(int32_t numBursts);
-
         void setPerformance(oboe::PerformanceMode mode);
-
-        void setAudioFrequency(double freq);
-
+        void setEupiFrequency(double freq);
         double getCurrentOutputLatencyMillis();
-
         Status getStatus();
-
         bool isLatencyDetectionSupported();
 
     private:
         //Do Not Copy EpnyTxEngine
         TxEngine(const TxEngine &);
-
         const TxEngine &operator=(const TxEngine &);
-
         class TxEngineImpl;
-
         std::unique_ptr<TxEngineImpl> pImpl;
     };
 }

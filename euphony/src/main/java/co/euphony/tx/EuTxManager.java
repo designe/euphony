@@ -15,6 +15,7 @@ public class EuTxManager {
 
 	public void setOption(EuOption option) {
         mTxOption = option;
+
         // mCodeMaker = new EuCodeMaker(mTxOption);
     }
 	/*

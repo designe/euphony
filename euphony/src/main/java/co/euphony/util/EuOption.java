@@ -1,16 +1,24 @@
 package co.euphony.util;
 
 public class EuOption {
-    public enum EncodingType {
-        HEX, BINARY
+    public enum CodingType {
+        BASE2, BASE16
     }
 
     public enum CommunicationMode {
-        GENERAL, DETECT, API
+        DEFAULT, DETECT, EUPI
     }
 
     public enum ModulationType {
-        ASK, FSK, CPFSK
+        FSK,
+        /*
+        TODO: v0.7.1.6 had ASK feature. but v0.8 has to create it.
+        ASK,
+         */
+        /*
+        TODO: Rearchitecturing necessary because the CPFSK modulation type has some glitch sound.
+        CPFSK
+         */
     }
 
     // RX & TX Common Variables
@@ -32,9 +40,34 @@ public class EuOption {
     private int mDetectFrequency;
 
     // Setting Types
-    private EncodingType mEncodingType;
+    private CodingType mCodingType;
     private CommunicationMode mCommunicationMode;
     private ModulationType mModulationType;
+
+    protected static class Builder {
+        private CodingType codingType;
+        private CommunicationMode commMode;
+        private ModulationType modulationType;
+
+        public Builder encodingWith(CodingType type) {
+            codingType = type;
+            return this;
+        }
+
+        public Builder communicationWith(CommunicationMode mode) {
+            commMode = mode;
+            return this;
+        }
+
+        public Builder modulationWith(ModulationType type) {
+            modulationType = type;
+            return this;
+        }
+
+        public EuOption build() {
+            return new EuOption(codingType, commMode, modulationType);
+        }
+    }
 
     private void initCommonVariables() {
         // TX & RX Common Variables Setting
@@ -55,24 +88,24 @@ public class EuOption {
 
     public EuOption() {
         initCommonVariables();
-        mEncodingType = EncodingType.HEX;
-        mCommunicationMode = CommunicationMode.GENERAL;
+        mCodingType = CodingType.BASE16;
+        mCommunicationMode = CommunicationMode.DEFAULT;
         mModulationType = ModulationType.FSK;
     }
-    public EuOption(EncodingType _encodingType, CommunicationMode _commMode, ModulationType _modulationType) {
+    public EuOption(CodingType _codingType, CommunicationMode _commMode, ModulationType _modulationType) {
         initCommonVariables();
 
-        mEncodingType = _encodingType;
+        mCodingType = _codingType;
         mCommunicationMode = _commMode;
         mModulationType = _modulationType;
     }
 
-    public EncodingType getEncodingType() {
-        return mEncodingType;
+    public CodingType getCodingType() {
+        return mCodingType;
     }
 
-    public void setEncodingType(EncodingType _encodingType) {
-        this.mEncodingType = _encodingType;
+    public void setCodingType(CodingType _codingType) {
+        this.mCodingType = _codingType;
     }
 
     public CommunicationMode getCommunicationMode() {
@@ -89,9 +122,6 @@ public class EuOption {
 
     public void setModulationType(ModulationType _modulationType) {
         this.mModulationType = _modulationType;
-
-        if(_modulationType == ModulationType.ASK)
-            setEncodingType(EncodingType.BINARY);
     }
 
     public int getSampleRate() {
@@ -181,7 +211,6 @@ public class EuOption {
     public void setControlPoint(int _controlPoint) {
         this.mControlPoint = _controlPoint;
     }
-
 
     public int getDetectFrequency() {
         return mDetectFrequency;

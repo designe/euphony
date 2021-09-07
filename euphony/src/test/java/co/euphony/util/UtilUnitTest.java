@@ -43,10 +43,10 @@ public class UtilUnitTest {
     public void option_isCorrect()
     {
         EuOption option = new EuOption();
-        option.setEncodingType(EuOption.EncodingType.HEX);
-        assertEquals(option.getEncodingType(), EuOption.EncodingType.HEX);
-        option.setCommunicationMode(EuOption.CommunicationMode.GENERAL);
-        assertEquals(option.getCommunicationMode(), EuOption.CommunicationMode.GENERAL);
+        option.setCodingType(EuOption.CodingType.BASE16);
+        assertEquals(option.getCodingType(), EuOption.CodingType.BASE16);
+        option.setCommunicationMode(EuOption.CommunicationMode.DEFAULT);
+        assertEquals(option.getCommunicationMode(), EuOption.CommunicationMode.DEFAULT);
     }
 
 }

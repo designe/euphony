@@ -55,10 +55,10 @@ public class EuRxManager {
 	public boolean listen(EuOption option) {
 		if(getStatus() != RxManagerStatus.RUNNING) {
 			switch (option.getCommunicationMode()) {
-				case GENERAL:
+				case DEFAULT:
 					mListenThread = new Thread(new RxRunner(option), "RX");
 					break;
-				case API: {
+				case EUPI: {
 					if(mAPICallRunner != null) {
 						mAPICallRunner.initialize(mAPICallRunner.getRxOption());
 						mListenThread = new Thread(mAPICallRunner, "API");
@@ -240,7 +240,7 @@ public class EuRxManager {
 					Message msg = mHandler.obtainMessage();
 					msg.what = RX_MODE;
 					msg.obj = null;
-					if(mRxOption.getEncodingType() == EuOption.EncodingType.HEX) {
+					if(mRxOption.getCodingType() == EuOption.CodingType.BASE16) {
 							msg.obj = getReceivedData();
 					}
 					this.setCompleted(false);

@@ -6,16 +6,13 @@ import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 
+import co.euphony.util.EuOption;
+
 public class EuphonyTx {
     long mEngineHandle = 0;
 
     public enum EpnyStatus {
         RUNNING, STOP, NO_CREATE
-    }
-
-    public enum EpnyMethod {
-        APIMode,
-        MessageMode
     }
 
     public enum EpnyPerformanceMode {
@@ -99,6 +96,24 @@ public class EuphonyTx {
                     native_setPerformance(mEngineHandle, 2);
                     break;
             }
+        }
+    }
+
+    public void setCodingType(EuOption.CodingType codingType) {
+        if(mEngineHandle != 0) {
+            native_setCodingType(mEngineHandle, codingType.ordinal());
+        }
+    }
+
+    public void setMode(EuOption.ModulationType modeType) {
+        if(mEngineHandle != 0) {
+            native_setMode(mEngineHandle, modeType.ordinal());
+        }
+    }
+
+    public void setModulation(EuOption.ModulationType modulationType) {
+        if(mEngineHandle != 0) {
+            native_setModulation(mEngineHandle, modulationType.ordinal());
         }
     }
 
@@ -209,6 +224,9 @@ public class EuphonyTx {
     private native void native_setToneOn(long engineHandle, boolean isToneOn);
     private native void native_setCountToneOn(long engineHandle, boolean isToneOn, int count);
     private native void native_setCode(long engineHandle, String data);
+    private native void native_setCodingType(long engineHandle, int type);
+    private native void native_setMode(long engineHandle, int mode);
+    private native void native_setModulation(long engineHandle, int modulationType);
     private native String native_getCode(long engineHandle);
     private native String native_getGenCode(long engineHandle);
     private native void native_setAudioFrequency(long engineHandle, double frequency);

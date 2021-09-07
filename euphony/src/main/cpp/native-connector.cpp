@@ -56,6 +56,42 @@ extern "C" {
         engine->setCode(inputStr);
     }
 
+    JNIEXPORT void JNICALL
+    Java_co_euphony_tx_EuphonyTx_native_1setCodingType(JNIEnv *env, jobject thiz, jlong engine_handle,
+                                                       jint type) {
+        auto engine = reinterpret_cast<TxEngine *> (engine_handle);
+        if(engine == nullptr) {
+            LOGE("Engine handle is invalid, call createHandle() to create a new one");
+            return;
+        }
+
+        engine->setCodingType(type);
+    }
+
+    JNIEXPORT void JNICALL
+    Java_co_euphony_tx_EuphonyTx_native_1setMode(JNIEnv *env, jobject thiz, jlong engine_handle,
+                                                 jint mode) {
+        auto engine = reinterpret_cast<TxEngine *> (engine_handle);
+        if(engine == nullptr) {
+            LOGE("Engine handle is invalid, call createHandle() to create a new one");
+            return;
+        }
+
+        engine->setMode(mode);
+    }
+
+    JNIEXPORT void JNICALL
+    Java_co_euphony_tx_EuphonyTx_native_1setModulation(JNIEnv *env, jobject thiz, jlong engine_handle,
+                                                       jint modulation_type) {
+        auto engine = reinterpret_cast<TxEngine *> (engine_handle);
+        if(engine == nullptr) {
+            LOGE("Engine handle is invalid, call createHandle() to create a new one");
+            return;
+        }
+
+        engine->setModulation(modulation_type);
+    }
+
 
     JNIEXPORT jstring JNICALL
     Java_co_euphony_tx_EuphonyTx_native_1getCode(JNIEnv *env, jobject thiz, jlong engine_handle) {
@@ -158,7 +194,7 @@ extern "C" {
             return;
         }
 
-        engine->setAudioFrequency(frequency);
+        engine->setEupiFrequency(frequency);
     }
 
     JNIEXPORT void JNICALL

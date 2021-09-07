@@ -22,16 +22,24 @@ namespace Euphony {
 
     enum class ModeType : int32_t {
         DEFAULT = 0, // Default Soundless Communication
-        LIVE = 1, // Live Souldless Communication
-        DETECT = 2, // For Wave Detection
-        COMMAND = 3, //
-        FIND = 4
+        DETECT = 1, // For Wave Detection
+        EUPI = 2, // For EUPI Mode
+        /*
+         * TODO: DISTANCE CALCULATION (Distance = Speed * Time)
+        DISTANCE = 4
+         */
     };
 
     enum class ModulationType : int32_t {
-        ASK = 0,
-        FSK = 1,
-        CPFSK = 2
+        FSK = 0,
+        /*
+        TODO: v0.7.1.6 had ASK feature. but v0.8 has to create it.
+        ASK,
+         */
+        /*
+        TODO: Rearchitecturing necessary because the CPFSK modulation type has some glitch sound.
+        CPFSK
+         */
     };
 
     enum class BaseType : int32_t {
@@ -41,6 +49,7 @@ namespace Euphony {
 
     enum class CharsetType : int32_t {
         ASCII = 0,
+        /* TODO: Develop Charset for UTF8 */
         UTF8 = 1
     };
 }
