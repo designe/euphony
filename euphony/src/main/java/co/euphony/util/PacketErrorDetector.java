@@ -14,7 +14,7 @@ public class PacketErrorDetector {
 	 *  return type : String
 	 *   	result of error detection algorithms
 	 *****************************************************/
-	public static String makeErrorDetectionCode(String payload, EuOption.CodingType codingType)
+	public static String makeErrorDetectionCode(String payload, EuSetting.CodingType codingType)
 	{
 		int payloadSum = 0;
 		int evenParity1 = 0;
@@ -46,7 +46,7 @@ public class PacketErrorDetector {
 		payloadSum = (~payloadSum + 1) & 0xF;
 		evenParity = (evenParity1&0x1)*8+(evenParity2&0x1)*4+(evenParity3&0x1)*2+(evenParity4&0x1);
 
-		if(codingType == EuOption.CodingType.BASE2)
+		if(codingType == EuSetting.CodingType.BASE2)
 			return String.format("%04d", Integer.parseInt(Integer.toBinaryString(payloadSum) + Integer.toBinaryString(evenParity)));
 		else
 			return "" + HEX_ARRAY[payloadSum] + HEX_ARRAY[evenParity];

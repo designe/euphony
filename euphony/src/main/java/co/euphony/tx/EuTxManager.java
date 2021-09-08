@@ -1,13 +1,22 @@
 package co.euphony.tx;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 
 import co.euphony.util.EuOption;
+import co.euphony.util.EuSetting;
 
 public class EuTxManager {
 	private EuphonyTx txCore;
 	private EuOption mTxOption = null;
 	private String genCode = "";
+
+	public enum EuPIDuration {
+		LENGTH_SHORT,
+		LENGTH_LONG,
+		LENGTH_FOREVER
+	}
 
 	public EuTxManager(Context context) {
 		txCore = new EuphonyTx(context);
@@ -15,9 +24,8 @@ public class EuTxManager {
 
 	public void setOption(EuOption option) {
         mTxOption = option;
+	}
 
-        // mCodeMaker = new EuCodeMaker(mTxOption);
-    }
 	/*
 	 * @deprecated Replaced by {@link #setCode()}, deprecated for naming & dynamic option.
 	 */
@@ -35,6 +43,21 @@ public class EuTxManager {
 		return txCore.getCode();
 	}
 
+	public void callEuPI(double freq, EuPIDuration duration) {
+		txCore.setMode(EuSetting.ModeType.EUPI);
+		txCore.setAudioFrequency(freq);
+		txCore.start();
+		txCore.setToneOn(true);
+
+		if (duration != EuPIDuration.LENGTH_FOREVER) {
+			new Handler(Looper.getMainLooper()).postDelayed(() -> {
+						txCore.setToneOn(false);
+						txCore.stop();
+					},
+					(duration == EuPIDuration.LENGTH_SHORT) ? 200 : 500);
+		}
+	}
+
 	public String getGenCode() {
 		return txCore.getGenCode();
 	}
@@ -48,54 +71,31 @@ public class EuTxManager {
 		return null;
 	}
 
-	public void process() { process(1); }
-
-	public void process(int count)
-	{
-		txCore.setCountToneOn(true, count);
-
-		/*
-		* TODO: legacy code will be removed.
-		if(count > 0)
-			mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, mOutStream.length*2, AudioTrack.MODE_STREAM);
-		else {
-			mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 44100, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, mOutStream.length*2, AudioTrack.MODE_STATIC);
-			count = -1;
-		}
-
-		mAudioTrack.setLoopPoints(0, mOutStream.length, count);
-
-		if(mAudioTrack != null){
-			try{
-				mAudioTrack.write(mOutStream, 0, mOutStream.length);
-				mAudioTrack.play();
-			}
-			catch(IllegalStateException e)
-			{
-				Log.i("PROCESS", e.getMessage());
-			}
-		}
-		 */
+	public void play() {
+		play(1);
 	}
-	
+
+	public void play(int count) {
+		txCore.setMode(EuSetting.ModeType.DEFAULT);
+		txCore.start();
+		txCore.setCountToneOn(true, count);
+	}
+
+	/*
+	 * @deprecated Replaced by {@link #setCode()}, deprecated for naming issue
+	 */
+	@Deprecated
+	public void process() { play(1); }
+
+	/*
+	 * @deprecated Replaced by {@link #setCode()}, deprecated for naming issue
+	 */
+	@Deprecated
+	public void process(int count) { play(count); }
+
 	public void stop()
 	{
 		txCore.setToneOn(false);
-		/*
-		* TODO: legacy code will be removed.
-		if(mAudioTrack != null)
-			mAudioTrack.pause();
-		 */
-	}
-	
-	public void setSoftVolume(float ratio)
-	{
-		/*
-		* TODO: legacy soft volume adjustment.
-		*  That will be created using EuphonyTx.
-		for(int i = 0; i < mOutStream.length; i++)
-			mOutStream[i] *= ratio;
-
-		 */
+		txCore.stop();
 	}
 }

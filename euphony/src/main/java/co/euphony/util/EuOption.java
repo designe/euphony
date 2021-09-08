@@ -1,25 +1,6 @@
 package co.euphony.util;
 
 public class EuOption {
-    public enum CodingType {
-        BASE2, BASE16
-    }
-
-    public enum CommunicationMode {
-        DEFAULT, DETECT, EUPI
-    }
-
-    public enum ModulationType {
-        FSK,
-        /*
-        TODO: v0.7.1.6 had ASK feature. but v0.8 has to create it.
-        ASK,
-         */
-        /*
-        TODO: Rearchitecturing necessary because the CPFSK modulation type has some glitch sound.
-        CPFSK
-         */
-    }
 
     // RX & TX Common Variables
     private int mSampleRate;
@@ -38,36 +19,6 @@ public class EuOption {
 
     // Detect Mode
     private int mDetectFrequency;
-
-    // Setting Types
-    private CodingType mCodingType;
-    private CommunicationMode mCommunicationMode;
-    private ModulationType mModulationType;
-
-    protected static class Builder {
-        private CodingType codingType;
-        private CommunicationMode commMode;
-        private ModulationType modulationType;
-
-        public Builder encodingWith(CodingType type) {
-            codingType = type;
-            return this;
-        }
-
-        public Builder communicationWith(CommunicationMode mode) {
-            commMode = mode;
-            return this;
-        }
-
-        public Builder modulationWith(ModulationType type) {
-            modulationType = type;
-            return this;
-        }
-
-        public EuOption build() {
-            return new EuOption(codingType, commMode, modulationType);
-        }
-    }
 
     private void initCommonVariables() {
         // TX & RX Common Variables Setting
@@ -88,40 +39,6 @@ public class EuOption {
 
     public EuOption() {
         initCommonVariables();
-        mCodingType = CodingType.BASE16;
-        mCommunicationMode = CommunicationMode.DEFAULT;
-        mModulationType = ModulationType.FSK;
-    }
-    public EuOption(CodingType _codingType, CommunicationMode _commMode, ModulationType _modulationType) {
-        initCommonVariables();
-
-        mCodingType = _codingType;
-        mCommunicationMode = _commMode;
-        mModulationType = _modulationType;
-    }
-
-    public CodingType getCodingType() {
-        return mCodingType;
-    }
-
-    public void setCodingType(CodingType _codingType) {
-        this.mCodingType = _codingType;
-    }
-
-    public CommunicationMode getCommunicationMode() {
-        return mCommunicationMode;
-    }
-
-    public void setCommunicationMode(CommunicationMode _communicationMode) {
-        this.mCommunicationMode = _communicationMode;
-    }
-
-    public ModulationType getModulationType() {
-        return mModulationType;
-    }
-
-    public void setModulationType(ModulationType _modulationType) {
-        this.mModulationType = _modulationType;
     }
 
     public int getSampleRate() {

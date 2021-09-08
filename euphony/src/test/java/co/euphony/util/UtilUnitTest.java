@@ -35,18 +35,19 @@ public class UtilUnitTest {
         mErrorHandler.euSetChannelState(ErrorHandler.UNBUSY);
         assertEquals(mErrorHandler.euGetChannelState(), ErrorHandler.UNBUSY);
 
-        int[] source = {0x6, 0x8, 0x6, 0x5, 0x6, 0xc, 0x6, 0xc, 0x6, 0xf};
-        assertEquals(mErrorHandler.checkNoise(source, 10), ErrorHandler.NONE);
+        int[] source = {0x6f, 0x8f, 0x6f, 0x5, 0x6f, 0xcf, 0x6, 0xc, 0x6, 0xf};
+        assertEquals(mErrorHandler.checkNoise(source, 10), ErrorHandler.EXIST);
     }
 
     @Test
-    public void option_isCorrect()
+    public void setting_isCorrect()
     {
-        EuOption option = new EuOption();
-        option.setCodingType(EuOption.CodingType.BASE16);
-        assertEquals(option.getCodingType(), EuOption.CodingType.BASE16);
-        option.setCommunicationMode(EuOption.CommunicationMode.DEFAULT);
-        assertEquals(option.getCommunicationMode(), EuOption.CommunicationMode.DEFAULT);
-    }
+        EuSetting setting = EuSetting.builder()
+                .modeWith(EuSetting.ModeType.DEFAULT)
+                .encodingWith(EuSetting.CodingType.BASE16)
+                .modulationWith(EuSetting.ModulationType.FSK)
+                .build();
 
+        assertEquals(setting.getCodingType(), EuSetting.CodingType.BASE16);
+        assertEquals(setting.getMode(), EuSetting.ModeType.DEFAULT); }
 }

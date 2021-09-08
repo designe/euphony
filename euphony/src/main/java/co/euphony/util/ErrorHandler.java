@@ -105,7 +105,7 @@ public class ErrorHandler {
 			nNoiseAverage += freqBuffer[i];
 		}
 		nNoiseAverage /= nSizeOfBuffer;
-		Log.v("NOISE", "NOISE Average is " + nNoiseAverage);
+		//Log.v("NOISE", "NOISE Average is " + nNoiseAverage);
 		if(nNoiseAverage > mNoiseRefrence){
 			return EXIST;
 		}

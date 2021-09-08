@@ -5,6 +5,8 @@ using namespace Euphony;
 WaveRenderer::WaveRenderer(WaveList waveListSrc, int32_t channelCountSrc)
 : channelCount (channelCountSrc)
 , readFrameIndex(0)
+, renderIndex(0)
+, renderTotalCount(0)
 {
     waveSourceSize = waveListSrc.size() * kBufferSize;
     waveSource = std::make_unique<float[]>(waveSourceSize);
@@ -30,8 +32,13 @@ void WaveRenderer::renderAudio(float *targetData, int32_t numFrames) {
             for (int j = 0; j < channelCount; ++j) {
                 targetData[(i * channelCount) + j] = waveSrcData[readFrameIndex];
             }
-            if (++readFrameIndex >= waveSourceSize)
+            if (++readFrameIndex >= waveSourceSize){
                 readFrameIndex = 0;
+                if(renderTotalCount > 0) {
+                    if(++renderIndex >= renderTotalCount)
+                        isWaveOn.store(false);
+                }
+            }
         }
     }
 }
@@ -40,3 +47,8 @@ void WaveRenderer::tap(bool isDown) {
     isWaveOn.store(isDown);
 }
 
+void WaveRenderer::tapCount(bool isDown, int count) {
+    isWaveOn.store(isDown);
+    renderIndex = 0;
+    renderTotalCount = count;
+}

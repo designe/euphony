@@ -1,12 +1,14 @@
 package co.euphony.rx;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
 import java.util.ArrayList;
 
 import co.euphony.util.EuOption;
+import co.euphony.util.EuSetting;
 
 import static co.euphony.rx.EpnyAPI.EpnyAPITrigger.KEY_DOWN;
 import static co.euphony.rx.EpnyAPI.EpnyAPITrigger.KEY_PRESSED;
@@ -29,18 +31,25 @@ public class EuRxManager {
 	private static final int API_CALL_MODE = 3;
 
 	private EuOption mOption;
+	private EuSetting mSetting;
 
 	public EuRxManager() {
-		mOption = new EuOption();
+		this(new EuOption());
 	}
 
 	public EuRxManager(EuOption option) {
 		mOption = option;
+		mSetting = EuSetting.builder()
+				.modeWith(EuSetting.ModeType.DEFAULT)
+				.encodingWith(EuSetting.CodingType.BASE16)
+				.modulationWith(EuSetting.ModulationType.FSK)
+				.build();
 	}
 
-	public EuRxManager(EuOption.CommunicationMode mode) {
+
+	public EuRxManager(EuSetting.ModeType mode) {
 		mOption = new EuOption();
-		mOption.setCommunicationMode(mode);
+		mSetting.setMode(mode);
 	}
 	
 	public boolean listen()
@@ -54,7 +63,7 @@ public class EuRxManager {
 
 	public boolean listen(EuOption option) {
 		if(getStatus() != RxManagerStatus.RUNNING) {
-			switch (option.getCommunicationMode()) {
+			switch (mSetting.getMode()) {
 				case DEFAULT:
 					mListenThread = new Thread(new RxRunner(option), "RX");
 					break;
@@ -83,7 +92,7 @@ public class EuRxManager {
 
 	public boolean listen(EuOption option, int freq) {
 		if(getStatus() != RxManagerStatus.RUNNING) {
-			if(option.getCommunicationMode() == EuOption.CommunicationMode.DETECT) {
+			if(mSetting.getMode() == EuSetting.ModeType.DETECT) {
 				mDetectRunner = new DetectRunner(option, freq);
 				mListenThread = new Thread(mDetectRunner, "DETECT");
 				mListenThread.start();
@@ -194,7 +203,7 @@ public class EuRxManager {
 		this.mAcousticSensor = iAcousticSensor;
 	}
 	
-	private Handler mHandler = new Handler(){		
+	private final Handler mHandler = new Handler(Looper.getMainLooper()){
 		public void handleMessage(Message msg){			
 			switch(msg.what){
 				case RX_MODE:
@@ -240,7 +249,7 @@ public class EuRxManager {
 					Message msg = mHandler.obtainMessage();
 					msg.what = RX_MODE;
 					msg.obj = null;
-					if(mRxOption.getCodingType() == EuOption.CodingType.BASE16) {
+					if(mSetting.getCodingType() == EuSetting.CodingType.BASE16) {
 							msg.obj = getReceivedData();
 					}
 					this.setCompleted(false);
@@ -265,7 +274,7 @@ public class EuRxManager {
 	}
 
 	public void setFrequencyForDetect(int freq) {
-		if(mOption.getCommunicationMode() == EuOption.CommunicationMode.DETECT) {
+		if(mSetting.getMode() == EuSetting.ModeType.DETECT) {
 			if(mDetectRunner != null)
 				mDetectRunner.setFrequency(freq);
 		}
@@ -274,7 +283,7 @@ public class EuRxManager {
 	private class APICallRunner extends EuFreqObject implements Runnable {
 
 		private double mThreshold = 0.0009;
-		private ArrayList<EpnyAPI> APICallList = new ArrayList<>();
+		private final ArrayList<EpnyAPI> APICallList = new ArrayList<>();
 
 		APICallRunner(EuOption option, EpnyAPI api) {
 			super(option);
@@ -305,10 +314,7 @@ public class EuRxManager {
 		}
 
 		public int getAPICount() {
-			if(APICallList != null)
-				return APICallList.size();
-			else
-				return 0;
+			return APICallList.size();
 		}
 
 		@Override

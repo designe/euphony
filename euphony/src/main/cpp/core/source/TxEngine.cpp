@@ -9,7 +9,7 @@
 #include "../ModemFactory.h"
 #include "../PacketBuilder.h"
 #include "../TxEngine.h"
-#include "../EupiGenerator.h"
+#include "../EuPIGenerator.h"
 #include "../AudioStreamCallback.h"
 #include "../WaveRenderer.h"
 
@@ -21,7 +21,7 @@ public:
     std::shared_ptr<oboe::AudioStream> mStream;
     oboe::AudioStreamBuilder mStreamBuilder;
     std::unique_ptr<AudioStreamCallback> mCallback;
-    shared_ptr<EuphonyAudioSource> mAudioSource;
+    shared_ptr<EuphonyAudioSource> mAudioSource = nullptr;
     bool mIsLatencyDetectionSupported = false;
 
     double eupiFreq;
@@ -42,7 +42,8 @@ public:
     , mModeType(ModeType::DEFAULT)
     , mStatus(STOP){
         createCallback();
-        start();
+        setModulation(ModulationType::FSK);
+        //start();
     }
 
     virtual ~TxEngineImpl() = default;
@@ -69,8 +70,8 @@ public:
                 return std::make_shared<WaveRenderer>(modulationResult, mStream->getChannelCount());
             }
             case ModeType::EUPI:
-                mAudioSource = std::make_shared<EupiGenerator>(mStream->getSampleRate(), mStream->getChannelCount());
-                std::dynamic_pointer_cast<EupiGenerator>(mAudioSource)->setFrequency(eupiFreq);
+                mAudioSource = std::make_shared<EuPIGenerator>(mStream->getSampleRate(), mStream->getChannelCount());
+                std::dynamic_pointer_cast<EuPIGenerator>(mAudioSource)->setFrequency(eupiFreq);
                 return mAudioSource;
         }
     }
@@ -172,6 +173,17 @@ public:
         mModem = ModemFactory::create(mModulationType);
     }
 
+    void setModulation(ModulationType modulationTypeSrc) {
+        switch(modulationTypeSrc) {
+            case ModulationType::FSK:
+            default:
+                mModulationType = ModulationType::FSK;
+                break;
+        }
+
+        mModem = ModemFactory::create(mModulationType);
+    }
+
     void setEupiFrequency(double freq) {
         eupiFreq = freq;
     }
@@ -238,11 +250,20 @@ TxEngine::~TxEngine() = default;
 
 
 void TxEngine::tap(bool isDown) {
-    pImpl->mAudioSource->tap(isDown);
+    if(pImpl->mAudioSource != nullptr)
+        pImpl->mAudioSource->tap(isDown);
+}
+
+void TxEngine::tapCount(bool isDown, int count) {
+    if(pImpl->mAudioSource != nullptr)
+        std::dynamic_pointer_cast<WaveRenderer>(pImpl->mAudioSource)->tapCount(isDown, count);
 }
 
 void TxEngine::setEupiFrequency(double freq) {
     pImpl->setEupiFrequency(freq);
+
+    if(pImpl->mAudioSource != nullptr)
+        std::dynamic_pointer_cast<EuPIGenerator>(pImpl->mAudioSource)->setFrequency(freq);
 }
 
 void TxEngine::stop() {
@@ -256,7 +277,6 @@ void TxEngine::start() {
 void TxEngine::setCode(std::string data) {
     pImpl->setCode(std::move(data));
 }
-
 
 void TxEngine::setCodingType(int codingTypeSrc) {
     pImpl->setModulation(codingTypeSrc);
@@ -313,3 +333,4 @@ std::string TxEngine::getCode() {
 std::string TxEngine::getGenCode() {
     return pImpl->txPacket->toString();
 }
+

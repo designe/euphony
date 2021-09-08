@@ -2,11 +2,11 @@
 // Created by desig on 2020-08-15.
 //
 
-#include "EupiGenerator.h"
+#include "EuPIGenerator.h"
 
 using namespace Euphony;
 
-EupiGenerator::EupiGenerator(int32_t sampleRate, int32_t channelCount)
+EuPIGenerator::EuPIGenerator(int32_t sampleRate, int32_t channelCount)
         : mSampleRate(sampleRate),
           mChannelCount(channelCount),
           mOscillators(std::make_unique<Oscillator[]>(channelCount)){
@@ -22,7 +22,7 @@ EupiGenerator::EupiGenerator(int32_t sampleRate, int32_t channelCount)
     }
 }
 
-void EupiGenerator::renderAudio(float *audioData, int32_t numFrames) {
+void EuPIGenerator::renderAudio(float *audioData, int32_t numFrames) {
     // Render each oscillator into its own channel
     std::fill_n(mBuffer.get(), kBufferSize, 0);
     for (int i = 0; i < mChannelCount; ++i) {
@@ -33,19 +33,19 @@ void EupiGenerator::renderAudio(float *audioData, int32_t numFrames) {
     }
 }
 
-void EupiGenerator::setFrequency(double frequency) {
+void EuPIGenerator::setFrequency(double frequency) {
     for(int i = 0;  i< mChannelCount; ++i) {
         mOscillators[i].setFrequency(frequency);
     }
 }
 
-void EupiGenerator::tap(bool isDown) {
+void EuPIGenerator::tap(bool isDown) {
     for (int i = 0; i < mChannelCount; ++i) {
         mOscillators[i].setWaveOn(isDown);
     }
 }
 
-std::unique_ptr<float[]> EupiGenerator::makeStaticWave(int freq) {
+std::unique_ptr<float[]> EuPIGenerator::makeStaticWave(int freq) {
     std::unique_ptr<float[]> waveArray = std::make_unique<float[]>(kBufferSize);
     float phase = 0.0;
     double phaseIncrement = (kTwoPi * freq) / static_cast<double>(kSampleRate);

@@ -17,10 +17,10 @@ namespace Euphony {
     class TxEngine {
     public:
         TxEngine();
-
         ~TxEngine();
 
         void tap(bool isDown);
+        void tapCount(bool isDown, int count);
         void stop();
         void start();
         void setCode(std::string data);

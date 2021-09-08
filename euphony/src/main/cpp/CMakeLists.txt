@@ -34,7 +34,7 @@ set(EUPHONY_SRC
         core/source/HexVector.cpp
         core/source/Wave.cpp
         core/source/WaveBuilder.cpp
-        core/source/EupiGenerator.cpp
+        core/source/EuPIGenerator.cpp
         core/source/WaveRenderer.cpp
         core/source/Oscillator.cpp
         core/source/FSK.cpp

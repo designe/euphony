@@ -38,7 +38,13 @@ extern "C" {
     JNIEXPORT void JNICALL
     Java_co_euphony_tx_EuphonyTx_native_1setCountToneOn(JNIEnv *env, jobject thiz, jlong engine_handle,
                                                         jboolean is_tone_on, jint count) {
-        // TODO: implement native_setCountToneOn()
+        auto engine = reinterpret_cast<TxEngine *> (engine_handle);
+        if(engine == nullptr) {
+            LOGE("Engine handle is invalid, call createHandle() to create a new one");
+            return;
+        }
+
+        engine->tapCount(is_tone_on, count);
     }
 
     JNIEXPORT void JNICALL
@@ -91,7 +97,6 @@ extern "C" {
 
         engine->setModulation(modulation_type);
     }
-
 
     JNIEXPORT jstring JNICALL
     Java_co_euphony_tx_EuphonyTx_native_1getCode(JNIEnv *env, jobject thiz, jlong engine_handle) {

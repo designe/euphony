@@ -3,10 +3,9 @@ package co.euphony.tx;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Build;
-import android.os.Handler;
 import android.util.Log;
 
-import co.euphony.util.EuOption;
+import co.euphony.util.EuSetting;
 
 public class EuphonyTx {
     long mEngineHandle = 0;
@@ -19,11 +18,6 @@ public class EuphonyTx {
         PowerSavingMode,
         NormalMode,
         SuperPowerMode
-    }
-
-    public enum EpnyAPIDuration {
-        LENGTH_SHORT,
-        LENGTH_LONG
     }
 
     static {
@@ -99,19 +93,19 @@ public class EuphonyTx {
         }
     }
 
-    public void setCodingType(EuOption.CodingType codingType) {
+    public void setCodingType(EuSetting.CodingType codingType) {
         if(mEngineHandle != 0) {
             native_setCodingType(mEngineHandle, codingType.ordinal());
         }
     }
 
-    public void setMode(EuOption.ModulationType modeType) {
+    public void setMode(EuSetting.ModeType modeType) {
         if(mEngineHandle != 0) {
             native_setMode(mEngineHandle, modeType.ordinal());
         }
     }
 
-    public void setModulation(EuOption.ModulationType modulationType) {
+    public void setModulation(EuSetting.ModulationType modulationType) {
         if(mEngineHandle != 0) {
             native_setModulation(mEngineHandle, modulationType.ordinal());
         }
@@ -135,14 +129,6 @@ public class EuphonyTx {
     private void setDefaultStreamValues(int sampleRate, int framesPerBurst) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
             native_setDefaultStreamValues(sampleRate, framesPerBurst);
-        }
-    }
-
-    public void callAPI(double freq, EpnyAPIDuration duration) {
-        if(mEngineHandle != 0) {
-            native_setAudioFrequency(mEngineHandle, freq);
-            native_setToneOn( mEngineHandle,true);
-            new Handler().postDelayed(() -> native_setToneOn(mEngineHandle, false), (duration == EpnyAPIDuration.LENGTH_SHORT) ? 200 : 500);
         }
     }
 
