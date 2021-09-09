@@ -14,12 +14,11 @@ namespace Euphony {
 
     class Modem {
     public:
+        virtual ~Modem() = default;
         virtual WaveList modulate(string code) = 0;
         virtual WaveList modulate(Packet* packet) = 0;
-
-        virtual int demodulate(const float* source, const int size) = 0;
-
-        virtual ~Modem() = default;
+        virtual std::shared_ptr<Packet> demodulate(const WaveList& waveList) = 0;
+        virtual std::shared_ptr<Packet> demodulate(const float* source, int sourceLength, int bufferSize) = 0;
     };
 }
 

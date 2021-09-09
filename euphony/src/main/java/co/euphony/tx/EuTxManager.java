@@ -45,9 +45,9 @@ public class EuTxManager {
 
 	public void callEuPI(double freq, EuPIDuration duration) {
 		txCore.setMode(EuSetting.ModeType.EUPI);
+		txCore.setToneOn(true);
 		txCore.setAudioFrequency(freq);
 		txCore.start();
-		txCore.setToneOn(true);
 
 		if (duration != EuPIDuration.LENGTH_FOREVER) {
 			new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -77,8 +77,8 @@ public class EuTxManager {
 
 	public void play(int count) {
 		txCore.setMode(EuSetting.ModeType.DEFAULT);
-		txCore.start();
 		txCore.setCountToneOn(true, count);
+		txCore.start();
 	}
 
 	/*

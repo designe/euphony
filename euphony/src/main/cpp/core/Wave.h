@@ -18,7 +18,8 @@ namespace Euphony {
     class Wave {
     public:
         Wave();
-        Wave(int hz, int size);
+        Wave(int hz, int bufferSize);
+        Wave(const float* src, int bufferSize);
         explicit Wave(const Wave& copy);
 
         static WaveBuilder create();
@@ -34,7 +35,7 @@ namespace Euphony {
         std::vector<float> getSource() const;
         void setSource(const std::vector<float> &source);
         std::vector<int16_t> getInt16Source();
-        int16_t convertFloat2Int16(float source);
+        static int16_t convertFloat2Int16(float source);
 
     private:
         friend class WaveBuilder;

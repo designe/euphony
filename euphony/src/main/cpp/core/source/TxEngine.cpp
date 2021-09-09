@@ -110,7 +110,6 @@ public:
 
         auto result = createPlaybackStream();
         if(result == oboe::Result::OK) {
-            mAudioSource = createAudioSource(mModeType);
             mCallback->setSource(std::dynamic_pointer_cast<IRenderableAudio>(mAudioSource));
             mStream->start();
             mIsLatencyDetectionSupported = (mStream->getTimestamp((CLOCK_MONOTONIC)) != oboe::Result::ErrorUnimplemented);
@@ -160,6 +159,8 @@ public:
                 mModeType = ModeType::EUPI;
                 break;
         }
+
+        mAudioSource = createAudioSource(mModeType);
     }
 
     void setModulation(int modulationTypeSrc) {

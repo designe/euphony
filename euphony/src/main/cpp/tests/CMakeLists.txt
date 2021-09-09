@@ -15,6 +15,7 @@ add_executable(
         hexVectorTest.cpp
         waveTest.cpp
         waveBuilderTest.cpp
+        waveRendererTest.cpp
         FSKTest.cpp
         packetTest.cpp
         packetBuilderTest.cpp

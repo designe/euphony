@@ -32,7 +32,6 @@ public:
 TEST_P(FSKTestFixture, FSKModulationString2StringTest)
 {
     createFSK();
-    createFFT();
 
     string inputCode;
     int expectedCodeLength;
@@ -40,22 +39,11 @@ TEST_P(FSKTestFixture, FSKModulationString2StringTest)
 
     std::tie(inputCode, expectedCodeLength, expectedFreqIndex) = GetParam();
 
-    auto resultFSK = fsk->modulate(inputCode);
-    EXPECT_EQ(resultFSK.size(), expectedCodeLength);
+    auto modulateFSK = fsk->modulate(inputCode);
+    EXPECT_EQ(modulateFSK.size(), expectedCodeLength);
 
-    for(auto wave : resultFSK) {
-        auto vectorInt16Source = wave->getInt16Source();
-
-        int16_t* int16Source = &vectorInt16Source[0];
-
-        float *resultBuf = fft->makeSpectrum(int16Source);
-        int resultBufSize = fft->getResultSize();
-        EXPECT_EQ(resultBufSize, (kFFTSize >> 1) + 1);
-        int idx = fsk->demodulate(resultBuf, resultBufSize);
-        EXPECT_EQ(idx, expectedFreqIndex++);
-    }
-
-    fft->destroy();
+    auto demodulateResult = fsk->demodulate(modulateFSK);
+    EXPECT_EQ(inputCode, demodulateResult->getPayloadStr());
 }
 
 TEST_F(FSKTestFixture, FSKCodeThrowTest)
@@ -83,6 +71,5 @@ INSTANTIATE_TEST_CASE_P(
                 TestParamType("012345", 6, 0),
                 TestParamType("0123456789", 10, 0),
                 TestParamType("abcdef", 6, 10),
-                TestParamType("0123456789abcdef", 16, 0),
-                TestParamType("S0123456789abcdef", 17, -1)
+                TestParamType("0123456789abcdef", 16, 0)
 ));

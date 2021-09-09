@@ -20,21 +20,13 @@ public:
         ASSERT_NE(fsk, nullptr);
     }
 
-    void createFFT() {
-        EXPECT_EQ(fft, nullptr);
-        fft = new FFTProcessor(kFFTSize, kSampleRate);
-        ASSERT_NE(fft, nullptr);
-    }
-
     FSK* fsk = nullptr;
-    FFTProcessor* fft = nullptr;
     Packet* pkt = nullptr;
 };
 
 TEST_P(PacketWithFSKTestFixture, PacketFSKTest)
 {
     createFSK();
-    createFFT();
 
     string source;
     string expectedResult;
@@ -46,28 +38,13 @@ TEST_P(PacketWithFSKTestFixture, PacketFSKTest)
     string actualResultCode = pkt->toString();
     EXPECT_EQ(actualResultCode, expectedResult);
 
-    auto fskResult = fsk->modulate(pkt->getPayloadStr());
-    EXPECT_EQ(fskResult.size(), source.size() * 2);
+    auto modulateResult = fsk->modulate(pkt->getPayloadStr());
+    EXPECT_EQ(modulateResult.size(), source.size() * 2);
 
-    HexVector hexVector = HexVector(fskResult.size());
+    auto demodulateResult = fsk->demodulate(modulateResult);
 
-    for (const auto& wave : fskResult) {
-        auto vectorInt16Source = wave->getInt16Source();
-        int16_t* int16Source = &vectorInt16Source[0];
-
-        float* resultBuf = fft->makeSpectrum(int16Source);
-        int resultBufSize = fft->getResultSize();
-
-        int data = fsk->demodulate(resultBuf, resultBufSize);
-        hexVector.pushBack(data);
-    }
-
+    EXPECT_EQ(expectedResult, demodulateResult->toString());
     pkt->clear();
-    pkt->setPayload(std::make_shared<Base16>(hexVector));
-
-    EXPECT_EQ(expectedResult, pkt->toString());
-    pkt->clear();
-    fft->destroy();
 }
 
 INSTANTIATE_TEST_CASE_P(

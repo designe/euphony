@@ -14,6 +14,8 @@ namespace Euphony {
         void renderAudio(float *targetData, int32_t numFrames) override; //From IRenderableAudio
         void tap(bool isDown) override;
         void tapCount(bool isDown, int count);
+        float* getWaveSource();
+        int32_t getWaveSourceSize() const;
 
     private:
         std::unique_ptr<float[]> waveSource;

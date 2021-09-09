@@ -18,25 +18,23 @@
 
 namespace Euphony {
 
-    class FFTProcessor : FFTModel {
+    class FFTProcessor : public FFTModel {
     public:
-        virtual void destroy();
-        virtual float* makeSpectrum(short* src);
-        int getResultSize() const;
         FFTProcessor(int fft_size, int samplerate);
         ~FFTProcessor();
+        virtual float* makeSpectrum(short* src);
+        int getResultSize() const;
 
     private:
-        virtual void initialize(int fft_size, int samplerate);
-        inline float shortToFloat(short val);
-        inline int frequencyToIndex(int freq);
+        static inline float shortToFloat(const short val);
+        inline int frequencyToIndex(const int freq) const;
 
         kiss_fftr_cfg config;
         /* unique_ptr's array version. it is available on c++14. */
         kiss_fft_cpx* spectrum;
         float* result;
         int fftSize;
-        int sampleRate;
+        int halfOfFFTSize;
     };
 }
 

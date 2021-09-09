@@ -14,12 +14,22 @@ mSize(0),
 crossfadeType(NONE)
 {}
 
-Euphony::Wave::Wave(int hz, int size)
+Euphony::Wave::Wave(int hz, int bufferSize)
 : mHz(hz),
-mSize(size),
+mSize(bufferSize),
 crossfadeType(NONE)
 {
     oscillate();
+}
+
+Wave::Wave(const float *src, int bufferSize)
+: mHz(0)
+, mSize(bufferSize)
+, crossfadeType(NONE)
+{
+    for(int i = 0; i < bufferSize; ++i) {
+        mSource.push_back(src[i]);
+    }
 }
 
 Euphony::Wave::Wave(const Wave& copy)
@@ -130,3 +140,4 @@ int16_t Euphony::Wave::convertFloat2Int16(float source) {
 void Wave::setCrossfade(CrossfadeType crossfadeType) {
     this->crossfadeType = crossfadeType;
 }
+

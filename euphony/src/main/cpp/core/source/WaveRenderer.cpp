@@ -52,3 +52,11 @@ void WaveRenderer::tapCount(bool isDown, int count) {
     renderIndex = 0;
     renderTotalCount = count;
 }
+
+float* WaveRenderer::getWaveSource() {
+    return waveSource.get();
+}
+
+int32_t WaveRenderer::getWaveSourceSize() const {
+    return waveSourceSize;
+}
