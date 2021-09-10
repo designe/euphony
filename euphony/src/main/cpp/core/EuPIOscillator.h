@@ -2,8 +2,8 @@
 // Created by designe on 20. 8. 25.
 //
 
-#ifndef EUPHONY_OSCILLATOR_H
-#define EUPHONY_OSCILLATOR_H
+#ifndef EUPHONY_EUPIOSCILLATOR_H
+#define EUPHONY_EUPIOSCILLATOR_H
 
 #include "Definitions.h"
 #include <cstdint>
@@ -14,9 +14,9 @@
 #include <IRenderableAudio.h>
 
 namespace Euphony {
-    class Oscillator : public IRenderableAudio {
+    class EuPIOscillator : public IRenderableAudio {
     public:
-        ~Oscillator() = default;
+        ~EuPIOscillator() = default;
         void setWaveOn(bool isWaveOn);
         void setSampleRate(int32_t sampleRate);
         void setFrequency(double frequency);
@@ -32,7 +32,7 @@ namespace Euphony {
             std::unique_ptr<float[]> source = std::make_unique<float[]>(waveLength);
 
             double phase = 0.0;
-            double phaseIncrement = Euphony::Oscillator::getPhaseIncrement(freq);
+            double phaseIncrement = Euphony::EuPIOscillator::getPhaseIncrement(freq);
             for(int i = 0; i < waveLength; i++) {
                 source[i] = sin(phase);
                 phase += phaseIncrement;
@@ -59,4 +59,4 @@ namespace Euphony {
     };
 }
 
-#endif //EUPHONY_OSCILLATOR_H
+#endif //EUPHONY_EUPIOSCILLATOR_H

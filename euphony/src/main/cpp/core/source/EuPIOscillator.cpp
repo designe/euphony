@@ -2,26 +2,26 @@
 // Created by designe on 20. 8. 25.
 //
 
-#include "../Oscillator.h"
+#include "../EuPIOscillator.h"
 
 /*
  * Frequencies Methods
  * */
-void Euphony::Oscillator::setFrequency(double frequency) {
+void Euphony::EuPIOscillator::setFrequency(double frequency) {
     mFrequency = frequency;
     mPhaseIncrement.store((kTwoPi * mFrequency) / static_cast<double>(mSampleRate));
 }
 
-void Euphony::Oscillator::setSampleRate(int32_t sampleRate) {
+void Euphony::EuPIOscillator::setSampleRate(int32_t sampleRate) {
     mSampleRate = sampleRate;
     mPhaseIncrement.store((kTwoPi * mFrequency) / static_cast<double>(mSampleRate));
 }
 
-void Euphony::Oscillator::setWaveOn(bool isWaveOn) {
+void Euphony::EuPIOscillator::setWaveOn(bool isWaveOn) {
     mIsWaveOn.store(isWaveOn);
 }
 
-void Euphony::Oscillator::renderAudio(float *data, int32_t numFrames) {
+void Euphony::EuPIOscillator::renderAudio(float *data, int32_t numFrames) {
     if(mIsWaveOn) {
         for(int i = 0; i < numFrames; ++i) {
             data[i] = (float) (sin(mPhase) * mAmplitude);
@@ -39,12 +39,9 @@ void Euphony::Oscillator::renderAudio(float *data, int32_t numFrames) {
     } else {
         if(mIsLastWave != true) {
             for(int i = 0; i < numFrames; ++i) {
-                data[i] = (float) (sin(mPhase) * mAmplitude);
+                data[i] = (sin(mPhase) * ((float)(numFrames-i) / (float)numFrames));
                 mPhase += mPhaseIncrement;
                 if (mPhase > kTwoPi) mPhase -= kTwoPi;
-            }
-            for(int i = 0; i < numFrames; i++) {
-                data[numFrames - i] *= ((float)i /(float) numFrames);
             }
             mIsLastWave.store(true);
             mIsFirstWave.store(false);

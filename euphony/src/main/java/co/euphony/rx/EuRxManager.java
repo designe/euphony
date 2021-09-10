@@ -49,7 +49,9 @@ public class EuRxManager {
 
 	public EuRxManager(EuSetting.ModeType mode) {
 		mOption = new EuOption();
-		mSetting.setMode(mode);
+		mSetting = EuSetting.builder()
+				.modeWith(mode)
+				.build();
 	}
 	
 	public boolean listen()

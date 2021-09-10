@@ -18,6 +18,7 @@ namespace Euphony {
         int32_t getWaveSourceSize() const;
 
     private:
+        void renderSilence(float *targetData, int32_t numFrames);
         std::unique_ptr<float[]> waveSource;
         std::atomic<bool> isWaveOn { false };
         int32_t channelCount;

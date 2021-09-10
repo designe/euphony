@@ -9,7 +9,7 @@
 #include "../ModemFactory.h"
 #include "../PacketBuilder.h"
 #include "../TxEngine.h"
-#include "../EuPIGenerator.h"
+#include "../EuPIRenderer.h"
 #include "../AudioStreamCallback.h"
 #include "../WaveRenderer.h"
 
@@ -57,7 +57,8 @@ public:
                 ->setPerformanceMode(oboe::PerformanceMode::LowLatency)
                 ->setFormat(oboe::AudioFormat::Float)
                 ->setCallback(mCallback.get())
-                ->setChannelCount(2)
+                ->setChannelCount(kChannelCount)
+                ->setSampleRate(kSampleRate)
                 ->setDeviceId(mDeviceId)
                 ->openStream(mStream);
     }
@@ -67,11 +68,11 @@ public:
             default:
             case ModeType::DEFAULT: {
                 auto modulationResult = mModem->modulate(txPacket->toString());
-                return std::make_shared<WaveRenderer>(modulationResult, mStream->getChannelCount());
+                return std::make_shared<WaveRenderer>(modulationResult, kChannelCount);
             }
             case ModeType::EUPI:
-                mAudioSource = std::make_shared<EuPIGenerator>(mStream->getSampleRate(), mStream->getChannelCount());
-                std::dynamic_pointer_cast<EuPIGenerator>(mAudioSource)->setFrequency(eupiFreq);
+                mAudioSource = std::make_shared<EuPIRenderer>(kSampleRate, kChannelCount);
+                std::dynamic_pointer_cast<EuPIRenderer>(mAudioSource)->setFrequency(eupiFreq);
                 return mAudioSource;
         }
     }
@@ -88,6 +89,7 @@ public:
         std::lock_guard<std::mutex> lock(mLock);
         if(mStream) {
             mStream->stop();
+            mStatus = STOP;
         }
     }
 
@@ -103,11 +105,8 @@ public:
         return start();
     }
 
-
-
     oboe::Result start() {
         std::lock_guard<std::mutex> lock(mLock);
-
         auto result = createPlaybackStream();
         if(result == oboe::Result::OK) {
             mCallback->setSource(std::dynamic_pointer_cast<IRenderableAudio>(mAudioSource));
@@ -264,7 +263,7 @@ void TxEngine::setEupiFrequency(double freq) {
     pImpl->setEupiFrequency(freq);
 
     if(pImpl->mAudioSource != nullptr)
-        std::dynamic_pointer_cast<EuPIGenerator>(pImpl->mAudioSource)->setFrequency(freq);
+        std::dynamic_pointer_cast<EuPIRenderer>(pImpl->mAudioSource)->setFrequency(freq);
 }
 
 void TxEngine::stop() {

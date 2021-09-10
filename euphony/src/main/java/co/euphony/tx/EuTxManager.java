@@ -9,8 +9,6 @@ import co.euphony.util.EuSetting;
 
 public class EuTxManager {
 	private EuphonyTx txCore;
-	private EuOption mTxOption = null;
-	private String genCode = "";
 
 	public enum EuPIDuration {
 		LENGTH_SHORT,
@@ -20,10 +18,6 @@ public class EuTxManager {
 
 	public EuTxManager(Context context) {
 		txCore = new EuphonyTx(context);
-	}
-
-	public void setOption(EuOption option) {
-        mTxOption = option;
 	}
 
 	/*
@@ -50,10 +44,7 @@ public class EuTxManager {
 		txCore.start();
 
 		if (duration != EuPIDuration.LENGTH_FOREVER) {
-			new Handler(Looper.getMainLooper()).postDelayed(() -> {
-						txCore.setToneOn(false);
-						txCore.stop();
-					},
+			new Handler(Looper.getMainLooper()).postDelayed(this::stop,
 					(duration == EuPIDuration.LENGTH_SHORT) ? 200 : 500);
 		}
 	}
@@ -96,6 +87,8 @@ public class EuTxManager {
 	public void stop()
 	{
 		txCore.setToneOn(false);
-		txCore.stop();
+		new Handler(Looper.getMainLooper()).postDelayed(() -> {
+					txCore.stop();
+				},300);
 	}
 }

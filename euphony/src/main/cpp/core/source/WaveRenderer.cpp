@@ -40,6 +40,13 @@ void WaveRenderer::renderAudio(float *targetData, int32_t numFrames) {
                 }
             }
         }
+
+        if(framesToRenderFromData < numFrames){
+            renderSilence(&targetData[framesToRenderFromData], numFrames * channelCount);
+        }
+
+    } else {
+        renderSilence(targetData, numFrames * channelCount);
     }
 }
 
@@ -59,4 +66,10 @@ float* WaveRenderer::getWaveSource() {
 
 int32_t WaveRenderer::getWaveSourceSize() const {
     return waveSourceSize;
+}
+
+void WaveRenderer::renderSilence(float *targetData, int32_t numFrames) {
+    for(int i = 0; i < numFrames; ++i) {
+        targetData[i] = 0;
+    }
 }
