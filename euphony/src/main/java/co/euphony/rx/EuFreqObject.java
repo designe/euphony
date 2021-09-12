@@ -38,7 +38,6 @@ public class EuFreqObject {
 	private ByteBuffer samples;
 	private FloatBuffer spectrum;
 	private FloatBuffer spectrum_p;
-	public static String receiveStr = "";
 	private String mReceivedData;
 
 	public String getReceivedData() {
@@ -96,10 +95,10 @@ public class EuFreqObject {
 		DATA_FREQ_INDEX_FOR_FFT = new int[dataRatePlus1];
 		for(int i = 0; i < dataRate; i++) {
 			DATA_FREQ[i] = mOption.getControlPoint() + mOption.getDataInterval() * i;
-			DATA_FREQ_INDEX_FOR_FFT[i] = ((int)((DATA_FREQ[i] / 22050.0) * mOption.getFFTSize() / 2)) + 1;
+			DATA_FREQ_INDEX_FOR_FFT[i] = Math.round((DATA_FREQ[i] / (float)mOption.getHalfOfSampleRate()) * (mOption.getFFTSize() >> 1));
 			mDynamicRefArray[i] = mOption.getDefaultReference();
 		}
-		DATA_FREQ_INDEX_FOR_FFT[dataRate] = ((int)((mOption.getOutsetFrequency() / 22050.0) * mOption.getFFTSize() / 2)) + 1;
+		DATA_FREQ_INDEX_FOR_FFT[dataRate] = Math.round((mOption.getOutsetFrequency() / (float)mOption.getHalfOfSampleRate()) * (mOption.getFFTSize() >> 1));
 		mDynamicRefArray[dataRate] = mOption.getDefaultReference();
 
 		samples = allocateByteBuffer(fftSize);
@@ -149,29 +148,9 @@ public class EuFreqObject {
 	}
 
 	public int detectFreq(int fFrequency){
-
-		double fFreqRatio;
-		int freqIndex;
-		float fmax;
-
-		fFreqRatio = fFrequency / 22050.0;
-		freqIndex = ( (int) (fFreqRatio * mRxOption.getFFTSize() / 2) ) + 1;
-
-		//f1 = spectrum.get(freqIndex-1);
-		fmax = spectrum.get(freqIndex);
-		//f3 = spectrum_p.get(freqIndex);
-		//r1 = real.get(freqIndex);
-		//i1 = image.get(freqIndex);
-		/*
-		String s = "";
-		for(int i = freqIndex - 1; i <= freqIndex + 1; i++)
-			s += " " + spectrum.get(i);
-		Log.i("HELLO FREQ", freqIndex + "::" + s);
-		*/
-		//f3 = spectrum.get(freqIndex+1);
-
-		//if( fmax < f2 )	fmax = f2;
-		//if( fmax < f3 )	fmax = f3;
+		final float fFreqRatio = fFrequency / (float) mRxOption.getHalfOfSampleRate();
+		final int freqIndex = Math.round(fFreqRatio * (mRxOption.getFFTSize() >> 1));
+		final float fmax = spectrum.get(freqIndex);
 
 		return (int)(fmax*100000);
 	}
@@ -258,7 +237,10 @@ public class EuFreqObject {
 						if(PacketErrorDetector.makeCheckSum(a) == mChannelArrayList.get(mChannelArrayList.size()-2) && (PacketErrorDetector.makeParallelParity(a) == mChannelArrayList.get(mChannelArrayList.size()-1))) {
 							isStarted = false;
 							isCompleted = true;
-							receiveStr = EuDataDecoder.decodeStaticHexCharSource(a);
+						} else {
+							Log.v("DATA","Parity Error Check = " + PacketErrorDetector.makeParallelParity(a));
+							Log.v("DATA","Checksum Error Check = " + PacketErrorDetector.makeCheckSum(a));
+							Log.v("DATA","ReceivedData = " + mReceivedData);
 						}
 						mChannelArrayList.clear();
 					}

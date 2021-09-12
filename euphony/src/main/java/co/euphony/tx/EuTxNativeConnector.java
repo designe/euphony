@@ -7,7 +7,7 @@ import android.util.Log;
 
 import co.euphony.util.EuSetting;
 
-public class EuphonyTx {
+public class EuTxNativeConnector {
     long mEngineHandle = 0;
 
     public enum EpnyStatus {
@@ -24,7 +24,7 @@ public class EuphonyTx {
         System.loadLibrary("euphony");
     }
 
-    public EuphonyTx() {
+    public EuTxNativeConnector() {
         if(!create()) {
             Log.e("EUPHONY_ERROR","Euphony Engine Creation was failed.");
         } else {
@@ -32,7 +32,7 @@ public class EuphonyTx {
         }
     }
 
-    public EuphonyTx(Context context) {
+    public EuTxNativeConnector(Context context) {
         if(!create(context)){
             Log.e("EUPHONY_ERROR","Euphony Engine Creation was failed.");
         } else {
@@ -40,8 +40,8 @@ public class EuphonyTx {
         }
     }
 
-    public static EuphonyTx newInstance() {
-        return new EuphonyTx();
+    public static EuTxNativeConnector newInstance() {
+        return new EuTxNativeConnector();
     }
 
     boolean create() {

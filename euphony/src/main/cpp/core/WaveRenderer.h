@@ -16,6 +16,7 @@ namespace Euphony {
         void tapCount(bool isDown, int count);
         float* getWaveSource();
         int32_t getWaveSourceSize() const;
+        void setWaveList(WaveList waveListSrc);
 
     private:
         void renderSilence(float *targetData, int32_t numFrames);

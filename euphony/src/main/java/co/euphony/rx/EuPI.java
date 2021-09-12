@@ -1,32 +1,32 @@
 package co.euphony.rx;
 
-public class EpnyAPI {
-    public enum EpnyAPITrigger {
+public class EuPI {
+    public enum EuPITrigger {
         KEY_DOWN, KEY_UP, KEY_PRESSED
     }
 
-    public enum EpnyAPIStatus {
+    public enum EuPIStatus {
         KEY_DOWN, KEY_UP, KEY_PRESSED
     }
 
     private int mKey;
     private int mFreqIndex;
-    EpnyAPITrigger mTrigger;
-    EpnyAPIStatus mStatus;
-    APICallDetector mAPICallback;
+    EuPITrigger mTrigger;
+    EuPIStatus mStatus;
+    EuPICallDetector mAPICallback;
 
-    public EpnyAPI(int key, APICallDetector callback) {
+    public EuPI(int key, EuPICallDetector callback) {
         mKey = key;
         mAPICallback = callback;
-        mTrigger = EpnyAPITrigger.KEY_PRESSED;
-        mStatus = EpnyAPIStatus.KEY_UP;
+        mTrigger = EuPITrigger.KEY_PRESSED;
+        mStatus = EuPIStatus.KEY_UP;
     }
 
-    public EpnyAPI(int key, EpnyAPITrigger trigger, APICallDetector callback) {
+    public EuPI(int key, EuPITrigger trigger, EuPICallDetector callback) {
         mKey = key;
         mAPICallback = callback;
         mTrigger = trigger;
-        mStatus = EpnyAPIStatus.KEY_UP;
+        mStatus = EuPIStatus.KEY_UP;
     }
 
     public int getKey() {
@@ -37,19 +37,19 @@ public class EpnyAPI {
         mFreqIndex = idx;
     }
 
-    public void setTrigger(EpnyAPITrigger trigger) {
+    public void setTrigger(EuPITrigger trigger) {
         mTrigger = trigger;
     }
 
-    public EpnyAPITrigger getTrigger() {
+    public EuPITrigger getTrigger() {
         return mTrigger;
     }
 
-    public void setStatus(EpnyAPIStatus status) {
+    public void setStatus(EuPIStatus status) {
         mStatus = status;
     }
 
-    public EpnyAPIStatus getStatus() {
+    public EuPIStatus getStatus() {
         return mStatus;
     }
 
@@ -57,7 +57,7 @@ public class EpnyAPI {
         return mFreqIndex;
     }
 
-    public APICallDetector getCallback() {
+    public EuPICallDetector getCallback() {
         return mAPICallback;
     }
 

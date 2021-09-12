@@ -14,7 +14,7 @@ namespace Euphony {
     constexpr int32_t kBufferSize = 2048;
     constexpr int32_t kBufferFadeLength = 256;
     constexpr int32_t kFrequencyInterval = kSampleRate / kFFTSize;
-    constexpr int32_t kStandardFrequency = 18017;
+    constexpr int32_t kStandardFrequency = 18001;
     constexpr int32_t kStartSignalFrequency = kStandardFrequency - kFrequencyInterval;
     constexpr double kPi = M_PI;
     constexpr double kTwoPi = kPi * 2.0;

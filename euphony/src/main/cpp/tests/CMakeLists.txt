@@ -17,6 +17,7 @@ add_executable(
         waveBuilderTest.cpp
         waveRendererTest.cpp
         FSKTest.cpp
+        FFTTest.cpp
         packetTest.cpp
         packetBuilderTest.cpp
         packetWithFSKTest.cpp

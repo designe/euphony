@@ -54,6 +54,23 @@ public class EuTxManagerTest {
         assertEquals(expectedGenCode, activeResult);
     }
 
+    @Test
+    public void setGetCodeTest() {
+        txManager.setCode("a");
+        String activeResult = txManager.getGenCode();
+        assertEquals("S6197", activeResult);
+
+        txManager.setCode("b");
+        activeResult = txManager.getGenCode();
+        assertEquals("S6284", activeResult);
+
+    }
+
+    @Test
+    public void testRun() {
+        txManager.callEuPI(18000, EuTxManager.EuPIDuration.LENGTH_SHORT);
+    }
+
     @Parameterized.Parameters
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][]{
@@ -61,6 +78,7 @@ public class EuTxManagerTest {
                 {"b", "62", "S6284", 5*2048, 5*8},
                 {"c", "63", "S6375", 5*2048, 5*8},
                 {"abc", "616263", "S61626386", 9*2048, 9*8},
+                {"Abc", "416263", "S416263a4", 9*2048, 9*8},
                 {"lmno", "6c6d6e6f", "S6c6d6e6f20", 11*2048, 11*8},
                 {"efg", "656667", "S656667c2", 9*2048, 9*8},
                 {"abcdefghijklmnopqrstuvwxyz", "6162636465666768696a6b6c6d6e6f707172737475767778797a", "S6162636465666768696a6b6c6d6e6f707172737475767778797aaa", 55*2048, 55*8},

@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import co.euphony.util.EuOption;
 import co.euphony.util.EuSetting;
 
-import static co.euphony.rx.EpnyAPI.EpnyAPITrigger.KEY_DOWN;
-import static co.euphony.rx.EpnyAPI.EpnyAPITrigger.KEY_PRESSED;
-import static co.euphony.rx.EpnyAPI.EpnyAPITrigger.KEY_UP;
+import static co.euphony.rx.EuPI.EuPITrigger.KEY_DOWN;
+import static co.euphony.rx.EuPI.EuPITrigger.KEY_PRESSED;
+import static co.euphony.rx.EuPI.EuPITrigger.KEY_UP;
 
 public class EuRxManager {
 
@@ -117,8 +117,8 @@ public class EuRxManager {
 		mListenThread = null;
 	}
 
-	public void setOnWaveKeyPressed(int freq, APICallDetector iAPICallDetector) {
-		EpnyAPI api = new EpnyAPI(freq, KEY_PRESSED, iAPICallDetector);
+	public void setOnWaveKeyPressed(int freq, EuPICallDetector iEuPICallDetector) {
+		EuPI api = new EuPI(freq, KEY_PRESSED, iEuPICallDetector);
 
 		if(mAPICallRunner == null) {
 			mAPICallRunner = new APICallRunner(mOption, api);
@@ -127,8 +127,8 @@ public class EuRxManager {
 		}
 	}
 
-	public void setOnWaveKeyDown(int key, APICallDetector iAPICallDetector) {
-		EpnyAPI api = new EpnyAPI(key, KEY_DOWN, iAPICallDetector);
+	public void setOnWaveKeyDown(int key, EuPICallDetector iEuPICallDetector) {
+		EuPI api = new EuPI(key, KEY_DOWN, iEuPICallDetector);
 
 		if(mAPICallRunner == null) {
 			mAPICallRunner = new APICallRunner(mOption, api);
@@ -137,8 +137,8 @@ public class EuRxManager {
 		}
 	}
 
-	public void setOnWaveKeyUp(int key, APICallDetector iAPICallDetector) {
-		EpnyAPI api = new EpnyAPI(key, KEY_UP, iAPICallDetector);
+	public void setOnWaveKeyUp(int key, EuPICallDetector iEuPICallDetector) {
+		EuPI api = new EuPI(key, KEY_UP, iEuPICallDetector);
 
 		if(mAPICallRunner == null) {
 			mAPICallRunner = new APICallRunner(mOption, api);
@@ -147,8 +147,8 @@ public class EuRxManager {
 		}
 	}
 
-	public void setOnWaveKeyPressed(int freq, double threshold, APICallDetector iAPICallDetector) {
-		EpnyAPI api = new EpnyAPI(freq, KEY_PRESSED, iAPICallDetector);
+	public void setOnWaveKeyPressed(int freq, double threshold, EuPICallDetector iEuPICallDetector) {
+		EuPI api = new EuPI(freq, KEY_PRESSED, iEuPICallDetector);
 
 		if(mAPICallRunner == null) {
 			mAPICallRunner = new APICallRunner(mOption, threshold, api);
@@ -157,8 +157,8 @@ public class EuRxManager {
 		}
 	}
 
-	public void setOnWaveKeyDown(int key, double threshold, APICallDetector iAPICallDetector) {
-		EpnyAPI api = new EpnyAPI(key, KEY_DOWN, iAPICallDetector);
+	public void setOnWaveKeyDown(int key, double threshold, EuPICallDetector iEuPICallDetector) {
+		EuPI api = new EuPI(key, KEY_DOWN, iEuPICallDetector);
 
 		if(mAPICallRunner == null) {
 			mAPICallRunner = new APICallRunner(mOption, threshold, api);
@@ -167,8 +167,8 @@ public class EuRxManager {
 		}
 	}
 
-	public void setOnWaveKeyUp(int key, double threshold, APICallDetector iAPICallDetector) {
-		EpnyAPI api = new EpnyAPI(key, KEY_UP, iAPICallDetector);
+	public void setOnWaveKeyUp(int key, double threshold, EuPICallDetector iEuPICallDetector) {
+		EuPI api = new EuPI(key, KEY_UP, iEuPICallDetector);
 
 		if(mAPICallRunner == null) {
 			mAPICallRunner = new APICallRunner(mOption, threshold, api);
@@ -215,7 +215,7 @@ public class EuRxManager {
 					mFrequencyDetector.detect((float)msg.obj);
 					break;
 				case API_CALL_MODE:
-					EpnyAPI api = (EpnyAPI)msg.obj;
+					EuPI api = (EuPI)msg.obj;
 					api.getCallback().call();
 					break;
 
@@ -252,7 +252,7 @@ public class EuRxManager {
 					msg.what = RX_MODE;
 					msg.obj = null;
 					if(mSetting.getCodingType() == EuSetting.CodingType.BASE16) {
-							msg.obj = getReceivedData();
+							msg.obj = EuDataDecoder.decodeStaticHexCharSource(getReceivedData());
 					}
 					this.setCompleted(false);
 					mHandler.sendMessage(msg);
@@ -285,15 +285,15 @@ public class EuRxManager {
 	private class APICallRunner extends EuFreqObject implements Runnable {
 
 		private double mThreshold = 0.0009;
-		private final ArrayList<EpnyAPI> APICallList = new ArrayList<>();
+		private final ArrayList<EuPI> APICallList = new ArrayList<>();
 
-		APICallRunner(EuOption option, EpnyAPI api) {
+		APICallRunner(EuOption option, EuPI api) {
 			super(option);
 			addAPI(api);
 			Log.d(LOG, "Added " + api.getKey() + "(" + api.getFreqIndex() + ")");
 		}
 
-		APICallRunner(EuOption option, double threshold, EpnyAPI api) {
+		APICallRunner(EuOption option, double threshold, EuPI api) {
 			super(option);
 			mThreshold = threshold;
 			addAPI(api);
@@ -310,7 +310,7 @@ public class EuRxManager {
 			return amp > mThreshold;
 		}
 
-		public void addAPI(EpnyAPI api) {
+		public void addAPI(EuPI api) {
 			api.setFreqIndex(calculateFreqIndex(api.getKey()));
 			APICallList.add(api);
 		}
@@ -325,17 +325,17 @@ public class EuRxManager {
 				processFFT();
 
 				float[] amp = {0, 0, 0};
-				for(EpnyAPI api : APICallList) {
+				for(EuPI api : APICallList) {
 					boolean isActable = false;
 					switch(api.getTrigger()) {
 						case KEY_DOWN: {
-							if(api.getStatus() == EpnyAPI.EpnyAPIStatus.KEY_UP){
+							if(api.getStatus() == EuPI.EuPIStatus.KEY_UP){
 								isActable = true;
 							}
 						}
 						break;
 						case KEY_UP: {
-							if(api.getStatus() != EpnyAPI.EpnyAPIStatus.KEY_UP) {
+							if(api.getStatus() != EuPI.EuPIStatus.KEY_UP) {
 								isActable = true;
 							}
 						}
@@ -360,7 +360,7 @@ public class EuRxManager {
 								mHandler.sendMessage(msg);
 							}
 
-							api.setStatus(EpnyAPI.EpnyAPIStatus.KEY_DOWN);
+							api.setStatus(EuPI.EuPIStatus.KEY_DOWN);
 						} else {
 							if(api.getTrigger() == KEY_UP) {
 								Message msg = mHandler.obtainMessage();
@@ -369,13 +369,13 @@ public class EuRxManager {
 								mHandler.sendMessage(msg);
 							}
 
-							api.setStatus(EpnyAPI.EpnyAPIStatus.KEY_UP);
+							api.setStatus(EuPI.EuPIStatus.KEY_UP);
 						}
 					} else {
 						if(compareThreshold((amp[1] - (amp[0] + amp[2])/2))) {
-							api.setStatus(EpnyAPI.EpnyAPIStatus.KEY_DOWN);
+							api.setStatus(EuPI.EuPIStatus.KEY_DOWN);
 						} else {
-							api.setStatus(EpnyAPI.EpnyAPIStatus.KEY_UP);
+							api.setStatus(EuPI.EuPIStatus.KEY_UP);
 						}
 					}
 

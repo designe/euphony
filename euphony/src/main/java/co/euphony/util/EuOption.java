@@ -4,6 +4,7 @@ public class EuOption {
 
     // RX & TX Common Variables
     private int mSampleRate;
+    private int mHalfOfSampleRate;
     private int mFFTSize;
     private int mBufferSize;
     private int mFadeRange;
@@ -23,10 +24,11 @@ public class EuOption {
     private void initCommonVariables() {
         // TX & RX Common Variables Setting
         mSampleRate = 44100;
+        mHalfOfSampleRate = (mSampleRate >> 1);
         mFFTSize = 512;
         mBufferSize = 2048;
         mFadeRange = 512; // to apply fadein fadeout range
-        mControlPoint = 18017;
+        mControlPoint = 18001;
         mDataRate = 16;
         mDataInterval = mSampleRate / mFFTSize;
         mOutsetFrequency = mControlPoint - mDataInterval;
@@ -137,4 +139,7 @@ public class EuOption {
         this.mDetectFrequency = mDetectFrequency;
     }
 
+    public int getHalfOfSampleRate() {
+        return mHalfOfSampleRate;
+    }
 }

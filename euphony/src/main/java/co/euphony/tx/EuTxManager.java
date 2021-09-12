@@ -4,11 +4,10 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
-import co.euphony.util.EuOption;
 import co.euphony.util.EuSetting;
 
 public class EuTxManager {
-	private EuphonyTx txCore;
+	private EuTxNativeConnector txCore;
 
 	public enum EuPIDuration {
 		LENGTH_SHORT,
@@ -17,7 +16,7 @@ public class EuTxManager {
 	}
 
 	public EuTxManager(Context context) {
-		txCore = new EuphonyTx(context);
+		txCore = new EuTxNativeConnector(context);
 	}
 
 	/*

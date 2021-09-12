@@ -1,5 +1,5 @@
 package co.euphony.rx;
 
-public interface APICallDetector {
+public interface EuPICallDetector {
     void call();
 }

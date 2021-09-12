@@ -1,22 +1,17 @@
+#include <utility>
+
 #include "../WaveRenderer.h"
 
 using namespace Euphony;
 
 WaveRenderer::WaveRenderer(WaveList waveListSrc, int32_t channelCountSrc)
 : channelCount (channelCountSrc)
+, waveSourceSize(0)
 , readFrameIndex(0)
 , renderIndex(0)
 , renderTotalCount(0)
 {
-    waveSourceSize = waveListSrc.size() * kBufferSize;
-    waveSource = std::make_unique<float[]>(waveSourceSize);
-    std::fill_n(waveSource.get(), waveSourceSize, 0);
-    for(int i = 0; i < waveListSrc.size(); i++) {
-        auto waveSrc = waveListSrc[i]->getSource();
-        for(int j = 0; j < kBufferSize; j++) {
-            waveSource[j + (i * kBufferSize)] = waveSrc[j];
-        }
-    }
+    setWaveList(std::move(waveListSrc));
 }
 
 void WaveRenderer::renderAudio(float *targetData, int32_t numFrames) {
@@ -71,5 +66,17 @@ int32_t WaveRenderer::getWaveSourceSize() const {
 void WaveRenderer::renderSilence(float *targetData, int32_t numFrames) {
     for(int i = 0; i < numFrames; ++i) {
         targetData[i] = 0;
+    }
+}
+
+void WaveRenderer::setWaveList(WaveList waveListSrc) {
+    waveSourceSize = waveListSrc.size() * kBufferSize;
+    waveSource = std::make_unique<float[]>(waveSourceSize);
+    std::fill_n(waveSource.get(), waveSourceSize, 0);
+    for(int i = 0; i < waveListSrc.size(); i++) {
+        auto waveSrc = waveListSrc[i]->getSource();
+        for(int j = 0; j < kBufferSize; j++) {
+            waveSource[j + (i * kBufferSize)] = waveSrc[j];
+        }
     }
 }

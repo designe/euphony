@@ -122,14 +122,18 @@ public:
         return result;
     }
 
-    void setCode(std::string data)
-    {
+    void setCode(std::string data) {
         txPacket = Packet::create()
                 .setPayloadWithASCII(std::move(data))
                 .basedOnBase16()
                 .build();
 
         txPacket->setBaseType(mBaseCodingType);
+
+        if (mAudioSource != nullptr) {
+            auto waveList = mModem->modulate(txPacket->toString());
+            std::dynamic_pointer_cast<WaveRenderer>(mAudioSource)->setWaveList(waveList);
+        }
     }
 
     void setCodingType(int codingTypeSrc) {
