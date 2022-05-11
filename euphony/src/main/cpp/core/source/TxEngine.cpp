@@ -96,6 +96,7 @@ public:
             }
 
             mStream->requestPause();
+            mStream->requestFlush();
             mStatus = Status::STOP;
         }
     }
